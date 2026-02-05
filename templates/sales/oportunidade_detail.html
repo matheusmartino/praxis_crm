@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ oportunidade.titulo }} — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ oportunidade.titulo }}</h2>
+    <a href="{% url 'sales:oportunidade_list' %}" class="btn btn-outline-secondary">Voltar</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Cliente</dt>
+            <dd class="col-sm-9">
+                <a href="{% url 'crm:cliente_detail' oportunidade.cliente.pk %}">{{ oportunidade.cliente.nome }}</a>
+            </dd>
+
+            <dt class="col-sm-3">Etapa</dt>
+            <dd class="col-sm-9">
+                {% if oportunidade.etapa == "FECHAMENTO" %}
+                <span class="badge bg-success">{{ oportunidade.get_etapa_display }}</span>
+                {% elif oportunidade.etapa == "PERDIDA" %}
+                <span class="badge bg-danger">{{ oportunidade.get_etapa_display }}</span>
+                {% else %}
+                <span class="badge bg-primary">{{ oportunidade.get_etapa_display }}</span>
+                {% endif %}
+            </dd>
+
+            <dt class="col-sm-3">Valor estimado</dt>
+            <dd class="col-sm-9">R$ {{ oportunidade.valor_estimado|floatformat:2 }}</dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9">{{ oportunidade.descricao|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Vendedor</dt>
+            <dd class="col-sm-9">{{ oportunidade.vendedor.get_full_name|default:oportunidade.vendedor.username }}</dd>
+
+            <dt class="col-sm-3">Criado em</dt>
+            <dd class="col-sm-9">{{ oportunidade.criado_em|date:"d/m/Y H:i" }}</dd>
+        </dl>
+    </div>
+    {% if oportunidade.etapa != "FECHAMENTO" and oportunidade.etapa != "PERDIDA" %}
+    <div class="card-footer d-flex gap-2">
+        <form method="post" action="{% url 'sales:oportunidade_avancar' oportunidade.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-sm" data-confirm="Deseja avançar esta oportunidade?">
+                <i class="bi bi-arrow-right-circle"></i> Avançar etapa
+            </button>
+        </form>
+        <form method="post" action="{% url 'sales:oportunidade_perdida' oportunidade.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm" data-confirm="Deseja marcar esta oportunidade como perdida?">
+                <i class="bi bi-x-circle"></i> Marcar como perdida
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+    <h4>Interações</h4>
+    <a href="{% url 'sales:interacao_create' %}" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-plus-lg"></i> Nova interação
+    </a>
+</div>
+
+<div class="list-group">
+    {% for interacao in interacoes %}
+    <div class="list-group-item">
+        <div class="d-flex justify-content-between">
+            <strong>{{ interacao.get_tipo_display }}</strong>
+            <small class="text-muted">{{ interacao.criado_em|date:"d/m/Y H:i" }} — {{ interacao.criado_por.get_full_name|default:interacao.criado_por.username }}</small>
+        </div>
+        <p class="mb-0 mt-1">{{ interacao.descricao }}</p>
+    </div>
+    {% empty %}
+    <div class="list-group-item text-muted">Nenhuma interação registrada.</div>
+    {% endfor %}
+</div>
+{% endblock %}

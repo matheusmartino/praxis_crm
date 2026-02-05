@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Oportunidades — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Oportunidades</h2>
+    <a href="{% url 'sales:oportunidade_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nova oportunidade
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Cliente</th>
+                <th>Etapa</th>
+                <th>Valor estimado</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for op in oportunidades %}
+            <tr>
+                <td><a href="{% url 'sales:oportunidade_detail' op.pk %}">{{ op.titulo }}</a></td>
+                <td>{{ op.cliente.nome }}</td>
+                <td>
+                    {% if op.etapa == "FECHAMENTO" %}
+                    <span class="badge bg-success">{{ op.get_etapa_display }}</span>
+                    {% elif op.etapa == "PERDIDA" %}
+                    <span class="badge bg-danger">{{ op.get_etapa_display }}</span>
+                    {% else %}
+                    <span class="badge bg-primary">{{ op.get_etapa_display }}</span>
+                    {% endif %}
+                </td>
+                <td>R$ {{ op.valor_estimado|floatformat:2 }}</td>
+                <td>{{ op.criado_em|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">Nenhuma oportunidade cadastrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cliente.nome }} — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ cliente.nome }}</h2>
+    <a href="{% url 'crm:cliente_list' %}" class="btn btn-outline-secondary">Voltar</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Tipo</dt>
+            <dd class="col-sm-9">{{ cliente.get_tipo_display }}</dd>
+
+            <dt class="col-sm-3">CNPJ/CPF</dt>
+            <dd class="col-sm-9">{{ cliente.cnpj_cpf|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">
+                {% if cliente.status == "ATIVO" %}
+                <span class="badge bg-success">{{ cliente.get_status_display }}</span>
+                {% elif cliente.status == "PROVISORIO" %}
+                <span class="badge bg-warning text-dark">{{ cliente.get_status_display }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ cliente.get_status_display }}</span>
+                {% endif %}
+            </dd>
+
+            <dt class="col-sm-3">Telefone</dt>
+            <dd class="col-sm-9">{{ cliente.telefone|default:"—" }}</dd>
+
+            <dt class="col-sm-3">E-mail</dt>
+            <dd class="col-sm-9">{{ cliente.email|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Contato principal</dt>
+            <dd class="col-sm-9">{{ cliente.nome_contato_principal|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Telefone do contato</dt>
+            <dd class="col-sm-9">{{ cliente.telefone_contato|default:"—" }}</dd>
+
+            <dt class="col-sm-3">E-mail do contato</dt>
+            <dd class="col-sm-9">{{ cliente.email_contato|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Criado por</dt>
+            <dd class="col-sm-9">{{ cliente.criado_por.get_full_name|default:cliente.criado_por.username }}</dd>
+
+            <dt class="col-sm-3">Criado em</dt>
+            <dd class="col-sm-9">{{ cliente.criado_em|date:"d/m/Y H:i" }}</dd>
+        </dl>
+    </div>
+</div>
+
+<h4 class="mt-4">Oportunidades</h4>
+<ul class="list-group">
+    {% for op in cliente.oportunidades.all %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{% url 'sales:oportunidade_detail' op.pk %}">{{ op.titulo }}</a>
+        <span class="badge bg-primary">{{ op.get_etapa_display }}</span>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-muted">Nenhuma oportunidade para este cliente.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
