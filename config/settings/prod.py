@@ -16,7 +16,7 @@ DATABASES = {
         "NAME": os.getenv("DB_NAME", "praxiscrm"),
         "USER": os.getenv("DB_USER", "praxiscrm"),
         "PASSWORD": os.getenv("DB_PASSWORD", "Praxis@0611"),
-        "HOST": os.getenv("DB_HOST", "jdbc:postgresql://praxiscrm.postgresql.dbaas.com.br:5432/praxiscrm"),
+        "HOST": "praxiscrm.postgresql.dbaas.com.br",
         "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
