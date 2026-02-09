@@ -4,9 +4,9 @@ pool:
   name: Default
 
 steps:
+  - checkout: self
+
   - script: |
-      echo "Agent funcionando"
-      whoami
-      pwd
-      uname -a
-    displayName: Teste do agent na VPS
+      echo "Sincronizando código (dry-run)"
+      rsync -av --dry-run ./ /home/deploy/apps/praxis_CRM/
+    displayName: Dry-run rsync
