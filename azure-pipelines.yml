@@ -1,0 +1,12 @@
+trigger: none
+
+pool:
+  name: Default
+
+steps:
+  - script: |
+      echo "Agent funcionando"
+      whoami
+      pwd
+      uname -a
+    displayName: Teste do agent na VPS
