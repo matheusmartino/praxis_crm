@@ -1,0 +1,33 @@
+trigger:
+  - main
+
+pool:
+  name: Default
+
+steps:
+  - checkout: self
+
+  - script: |
+      echo "===> Sincronizando código para produção"
+      rsync -av --delete ./ /home/azagent/apps/praxis_CRM/
+    displayName: Rsync código para VPS
+
+  - script: |
+      echo "===> Ativando venv e instalando dependências"
+      cd /home/azagent/apps/praxis_CRM
+      source venv/bin/activate
+      pip install -r requirements.txt
+    displayName: Instalar dependências
+
+  - script: |
+      echo "===> Rodando migrations e collectstatic"
+      cd /home/azagent/apps/praxis_CRM
+      source venv/bin/activate
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    displayName: Migrate + Collectstatic
+
+  - script: |
+      echo "===> Reiniciando Gunicorn"
+      sudo systemctl restart gunicorn
+    displayName: Restart Gunicorn
