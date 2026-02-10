@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Interações — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Interações</h2>
+    <a href="{% url 'sales:interacao_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nova interação
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Oportunidade</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+                <th>Criado por</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for interacao in interacoes %}
+            <tr>
+                <td><a href="{% url 'sales:oportunidade_detail' interacao.oportunidade.pk %}">{{ interacao.oportunidade.titulo }}</a></td>
+                <td>{{ interacao.get_tipo_display }}</td>
+                <td>{{ interacao.descricao|truncatechars:80 }}</td>
+                <td>{{ interacao.criado_por.get_full_name|default:interacao.criado_por.username }}</td>
+                <td>{{ interacao.criado_em|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">Nenhuma interação registrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
