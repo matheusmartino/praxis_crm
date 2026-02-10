@@ -5,6 +5,16 @@
 {% block content %}
 <h2>Dashboard</h2>
 
+{% if followups_vencidos > 0 %}
+<div class="alert alert-danger d-flex align-items-center mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+    <div>
+        Você tem <strong>{{ followups_vencidos }}</strong> oportunidade{{ followups_vencidos|pluralize }} com follow-up vencido.
+        <a href="{% url 'sales:minhas_pendencias' %}" class="alert-link">Ver pendências</a>
+    </div>
+</div>
+{% endif %}
+
 {% if followups_hoje > 0 %}
 <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
     <i class="bi bi-bell-fill me-2 fs-4"></i>

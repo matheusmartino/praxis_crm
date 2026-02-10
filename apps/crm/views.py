@@ -18,7 +18,22 @@ class ClienteListView(VendedorRequiredMixin, ListView):
         qs = super().get_queryset()
         if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
             qs = qs.filter(criado_por=self.request.user)
+
+        nome = self.request.GET.get("nome", "").strip()
+        if nome:
+            qs = qs.filter(nome__icontains=nome)
+
         return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["filtro_nome"] = self.request.GET.get("nome", "")
+
+        params = self.request.GET.copy()
+        params.pop("page", None)
+        ctx["filter_params"] = params.urlencode()
+
+        return ctx
 
 
 class ClienteCreateView(VendedorWriteMixin, CreateView):

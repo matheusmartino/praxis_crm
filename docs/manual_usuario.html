@@ -309,7 +309,7 @@
 <div class="cover">
     <h1>Praxis CRM</h1>
     <p class="subtitle">Manual do Usuário</p>
-    <p class="version">Versão 2.0</p>
+    <p class="version">Versão 3.0</p>
     <p class="date">Fevereiro de 2026</p>
 </div>
 
@@ -327,7 +327,9 @@
         <li><strong>8.</strong> Metas Comerciais</li>
         <li><strong>9.</strong> Follow-up e Disciplina Comercial</li>
         <li><strong>10.</strong> Lembretes e Alertas</li>
-        <li><strong>11.</strong> Perguntas Frequentes</li>
+        <li><strong>11.</strong> Filtros e Busca</li>
+        <li><strong>12.</strong> Sustentação da Disciplina (Etapa 5)</li>
+        <li><strong>13.</strong> Perguntas Frequentes</li>
     </ul>
 </div>
 
@@ -1224,8 +1226,191 @@ Prospecção → Qualificação → Proposta → Negociação → Fechamento
     </tr>
 </table>
 
-<!-- 11. PERGUNTAS FREQUENTES -->
-<h1>11. Perguntas Frequentes</h1>
+<!-- 11. FILTROS E BUSCA -->
+<h1>11. Filtros e Busca</h1>
+
+<p>As listas de Oportunidades, Interações e Clientes possuem filtros para ajudar você a localizar informações rapidamente, especialmente quando o volume de registros cresce.</p>
+
+<h2>11.1 Filtros de Oportunidades</h2>
+
+<p>Na lista de Oportunidades (<strong>Oportunidades</strong> no menu), você encontra um card de filtros acima da tabela com as seguintes opções:</p>
+
+<table>
+    <tr>
+        <th>Filtro</th>
+        <th>Descrição</th>
+    </tr>
+    <tr>
+        <td><strong>Cliente</strong></td>
+        <td>Selecione um cliente para ver apenas suas oportunidades</td>
+    </tr>
+    <tr>
+        <td><strong>Data inicial</strong></td>
+        <td>Mostra oportunidades criadas a partir desta data</td>
+    </tr>
+    <tr>
+        <td><strong>Data final</strong></td>
+        <td>Mostra oportunidades criadas até esta data</td>
+    </tr>
+</table>
+
+<p>Clique em <strong>Filtrar</strong> para aplicar. Use <strong>Limpar</strong> para remover todos os filtros e voltar à lista completa.</p>
+
+<div class="info-box">
+    <strong>Dica:</strong> Você pode combinar os filtros. Por exemplo, selecione um cliente E um período para ver apenas as oportunidades daquele cliente naquele intervalo de datas.
+</div>
+
+<h2>11.2 Filtros de Interações</h2>
+
+<p>Na lista de Interações (<strong>Interações</strong> no menu), os mesmos filtros estão disponíveis:</p>
+
+<ul>
+    <li><strong>Cliente:</strong> Filtra interações vinculadas a oportunidades do cliente selecionado</li>
+    <li><strong>Data inicial / Data final:</strong> Filtra pelo período de criação da interação</li>
+</ul>
+
+<h2>11.3 Busca de Clientes</h2>
+
+<p>Na lista de Clientes (<strong>Clientes</strong> no menu), há um campo de busca por nome:</p>
+
+<ol>
+    <li>Digite parte do nome do cliente no campo de busca</li>
+    <li>Clique em <strong>Buscar</strong></li>
+    <li>A lista mostrará apenas os clientes cujo nome contém o texto digitado</li>
+</ol>
+
+<div class="info-box">
+    <strong>Dica:</strong> A busca não diferencia maiúsculas de minúsculas. Digitando "silva", você encontrará "Silva", "SILVA" e "Da Silva".
+</div>
+
+<h2>11.4 Filtros e Paginação</h2>
+
+<p>Quando você aplica filtros e a lista filtrada possui mais de uma página, os filtros são preservados ao navegar entre as páginas. Você não precisa reaplicá-los a cada página.</p>
+
+<h2>11.5 Visibilidade dos Filtros</h2>
+
+<table>
+    <tr>
+        <th>Perfil</th>
+        <th>Clientes no dropdown</th>
+    </tr>
+    <tr>
+        <td><span class="badge badge-vendedor">VENDEDOR</span></td>
+        <td>Apenas seus próprios clientes</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-gestor">GESTOR</span></td>
+        <td>Todos os clientes</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-admin">ADMIN</span></td>
+        <td>Todos os clientes</td>
+    </tr>
+</table>
+
+<h2>11.6 Quando Usar Cada Filtro</h2>
+
+<div class="success-box">
+    <strong>Filtro por cliente:</strong> Use quando quiser ver o histórico completo de um cliente específico — todas as oportunidades ou interações associadas a ele.
+</div>
+
+<div class="success-box">
+    <strong>Filtro por período:</strong> Use quando quiser analisar um intervalo de tempo — por exemplo, oportunidades criadas no último mês ou interações da semana passada.
+</div>
+
+<!-- 12. SUSTENTAÇÃO DA DISCIPLINA (ETAPA 5) -->
+<h1>12. Sustentação da Disciplina (Etapa 5)</h1>
+
+<p>A Etapa 5 do Praxis CRM reúne funcionalidades que ajudam a manter a <strong>disciplina comercial</strong> no dia a dia. O objetivo é simples: garantir que nenhuma oportunidade seja esquecida e que o vendedor tenha ferramentas práticas para organizar seu trabalho.</p>
+
+<div class="info-box">
+    <strong>Princípio da Etapa 5:</strong> O sistema ajuda, mas não atrapalha. Os lembretes são discretos, os filtros são opcionais, e nenhuma automação substitui a decisão do vendedor.
+</div>
+
+<h2>12.1 Lembrete Visual</h2>
+
+<p>Ao entrar no sistema, o <span class="badge badge-vendedor">VENDEDOR</span> verá um card discreto no dashboard quando houver oportunidades com follow-up vencido:</p>
+
+<div class="warning-box">
+    Você tem <strong>X</strong> oportunidades com follow-up vencido. <em>Ver pendências</em>
+</div>
+
+<p>Características do lembrete:</p>
+
+<ul>
+    <li>Aparece <strong>apenas</strong> quando há follow-ups com data passada (vencidos)</li>
+    <li>Mostra a quantidade exata de oportunidades pendentes</li>
+    <li>Possui link direto para a lista de pendências</li>
+    <li>Não bloqueia nenhuma ação — é apenas informativo</li>
+    <li>Desaparece automaticamente quando não há mais pendências</li>
+</ul>
+
+<p>Além do lembrete de vencidos, o sistema também exibe um aviso separado para follow-ups agendados <strong>para o dia atual</strong>, ajudando o vendedor a priorizar suas ações.</p>
+
+<h2>12.2 Lembrete por E-mail</h2>
+
+<p>O sistema envia <strong>um único e-mail por dia</strong> para vendedores que possuem follow-ups agendados:</p>
+
+<table>
+    <tr>
+        <th>Característica</th>
+        <th>Descrição</th>
+    </tr>
+    <tr>
+        <td>Frequência</td>
+        <td>No máximo 1 e-mail por vendedor por dia</td>
+    </tr>
+    <tr>
+        <td>Condição</td>
+        <td>Apenas se houver follow-up agendado para o dia</td>
+    </tr>
+    <tr>
+        <td>Conteúdo</td>
+        <td>Mensagem curta informando a quantidade de pendências</td>
+    </tr>
+    <tr>
+        <td>Destinatário</td>
+        <td>Apenas o vendedor responsável</td>
+    </tr>
+</table>
+
+<div class="info-box">
+    <strong>Importante:</strong> O e-mail não contém detalhes comerciais sensíveis. É apenas um lembrete para que o vendedor acesse o sistema e verifique suas pendências.
+</div>
+
+<h2>12.3 Filtros nas Listas</h2>
+
+<p>As listas de Oportunidades e Interações possuem filtros por <strong>Cliente</strong> e <strong>Período</strong> (data inicial e data final). A lista de Clientes possui busca por <strong>Nome</strong>.</p>
+
+<p>Os filtros utilizam parâmetros GET na URL, o que significa que:</p>
+
+<ul>
+    <li>Os filtros são preservados ao navegar entre páginas</li>
+    <li>Os filtros são mantidos ao voltar de uma ação (editar, visualizar)</li>
+    <li>É possível compartilhar uma URL filtrada com outro usuário</li>
+</ul>
+
+<p>Para mais detalhes sobre cada filtro, consulte a seção <strong>11. Filtros e Busca</strong>.</p>
+
+<h2>12.4 Objetivo da Etapa</h2>
+
+<p>A Etapa 5 não adiciona funcionalidades complexas. Ela conecta recursos existentes para criar um ciclo de sustentação:</p>
+
+<div class="flow">
+Vendedor entra no sistema
+    → Vê lembrete visual de follow-ups vencidos
+    → Acessa lista de pendências
+    → Usa filtros para localizar oportunidades
+    → Atualiza follow-ups
+    → Ciclo se repete no próximo acesso
+</div>
+
+<div class="success-box">
+    <strong>Resultado esperado:</strong> Com o uso diário do lembrete visual, dos e-mails e dos filtros, o vendedor mantém todas as oportunidades em movimento, sem depender de memória ou controles externos.
+</div>
+
+<!-- 13. PERGUNTAS FREQUENTES -->
+<h1>13. Perguntas Frequentes</h1>
 
 <h3>Por que não consigo ver os clientes de outros vendedores?</h3>
 <p>Por segurança, cada vendedor vê apenas seus próprios clientes e oportunidades. Gestores e admins podem ver todos os dados.</p>
@@ -1266,7 +1451,7 @@ Prospecção → Qualificação → Proposta → Negociação → Fechamento
 <hr style="margin: 50px 0; border: none; border-top: 1px solid #ddd;">
 
 <p style="text-align: center; color: #95a5a6;">
-    <strong>Praxis CRM</strong> — Manual do Usuário v2.0<br>
+    <strong>Praxis CRM</strong> — Manual do Usuário v3.0<br>
     Desenvolvido com Django 5.x
 </p>
 

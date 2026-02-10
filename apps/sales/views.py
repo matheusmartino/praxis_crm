@@ -7,6 +7,7 @@ from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from apps.core.mixins import GestorRequiredMixin, VendedorRequiredMixin, VendedorWriteMixin
+from apps.crm.models import Cliente
 from apps.sales.models import Interacao, MetaComercial, Oportunidade
 from apps.sales.forms import FollowUpForm, InteracaoForm, OportunidadeForm
 from apps.sales.services import (
@@ -33,7 +34,37 @@ class OportunidadeListView(VendedorRequiredMixin, ListView):
         qs = super().get_queryset()
         if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
             qs = qs.filter(vendedor=self.request.user)
+
+        cliente_id = self.request.GET.get("cliente")
+        data_inicial = self.request.GET.get("data_inicial")
+        data_final = self.request.GET.get("data_final")
+
+        if cliente_id:
+            qs = qs.filter(cliente_id=cliente_id)
+        if data_inicial:
+            qs = qs.filter(criado_em__date__gte=data_inicial)
+        if data_final:
+            qs = qs.filter(criado_em__date__lte=data_final)
+
         return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
+            ctx["clientes"] = Cliente.objects.filter(criado_por=self.request.user)
+        else:
+            ctx["clientes"] = Cliente.objects.all()
+
+        ctx["filtro_cliente"] = self.request.GET.get("cliente", "")
+        ctx["filtro_data_inicial"] = self.request.GET.get("data_inicial", "")
+        ctx["filtro_data_final"] = self.request.GET.get("data_final", "")
+
+        params = self.request.GET.copy()
+        params.pop("page", None)
+        ctx["filter_params"] = params.urlencode()
+
+        return ctx
 
 
 class OportunidadeCreateView(VendedorWriteMixin, CreateView):
@@ -121,7 +152,37 @@ class InteracaoListView(VendedorRequiredMixin, ListView):
         qs = super().get_queryset()
         if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
             qs = qs.filter(criado_por=self.request.user)
+
+        cliente_id = self.request.GET.get("cliente")
+        data_inicial = self.request.GET.get("data_inicial")
+        data_final = self.request.GET.get("data_final")
+
+        if cliente_id:
+            qs = qs.filter(oportunidade__cliente_id=cliente_id)
+        if data_inicial:
+            qs = qs.filter(criado_em__date__gte=data_inicial)
+        if data_final:
+            qs = qs.filter(criado_em__date__lte=data_final)
+
         return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
+            ctx["clientes"] = Cliente.objects.filter(criado_por=self.request.user)
+        else:
+            ctx["clientes"] = Cliente.objects.all()
+
+        ctx["filtro_cliente"] = self.request.GET.get("cliente", "")
+        ctx["filtro_data_inicial"] = self.request.GET.get("data_inicial", "")
+        ctx["filtro_data_final"] = self.request.GET.get("data_final", "")
+
+        params = self.request.GET.copy()
+        params.pop("page", None)
+        ctx["filter_params"] = params.urlencode()
+
+        return ctx
 
 
 class InteracaoCreateView(VendedorWriteMixin, CreateView):

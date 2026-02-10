@@ -10,6 +10,25 @@
     </a>
 </div>
 
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" action="">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-8">
+                    <label for="filtro-nome" class="form-label form-label-sm mb-0">Buscar por nome</label>
+                    <input type="text" name="nome" id="filtro-nome" class="form-control form-control-sm" placeholder="Digite o nome do cliente..." value="{{ filtro_nome }}">
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a href="{{ request.path }}" class="btn btn-sm btn-outline-secondary">Limpar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead>
@@ -55,11 +74,11 @@
 <nav>
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ filter_params }}">Anterior</a></li>
         {% endif %}
         <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
         {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ filter_params }}">Próxima</a></li>
         {% endif %}
     </ul>
 </nav>

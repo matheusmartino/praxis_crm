@@ -36,15 +36,17 @@ def home_view(request):
         etapa__in=["FECHAMENTO", "PERDIDA"]
     )
 
-    # Lembrete visual: oportunidades com follow-up para hoje
+    # Lembrete visual: oportunidades com follow-up para hoje e vencidos
     hoje = timezone.now().date()
     followups_hoje = oportunidades_abertas.filter(data_follow_up=hoje).count()
+    followups_vencidos = oportunidades_abertas.filter(data_follow_up__lt=hoje).count()
 
     context = {
         "clientes_recentes": clientes_recentes,
         "oportunidades_abertas": oportunidades_abertas,
         "total_oportunidades": oportunidades_abertas.count(),
         "followups_hoje": followups_hoje,
+        "followups_vencidos": followups_vencidos,
     }
     return render(request, "home.html", context)
 
