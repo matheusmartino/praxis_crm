@@ -54,6 +54,11 @@ stages:
           git -C $HOME/praxis_crm reset --hard origin/master
 
           echo "🐍 Ativando ambiente virtual..."
+
+          if [ ! -d "$HOME/praxis_crm/venv" ]; then
+            echo "Criando ambiente virtual..."
+            python3 -m venv $HOME/praxis_crm/venv
+          fi
           source $HOME/praxis_crm/venv/bin/activate
 
           echo "📦 Instalando dependências..."
