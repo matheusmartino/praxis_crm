@@ -57,7 +57,7 @@ stages:
 
           VENV_PATH="$HOME/praxis_crm/venv"
 
-          if [ ! -d "$VENV_PATH" ]; then
+          if [ ! -d "$VENV_PATH" ]: then
             echo "Criando ambiente virtual..."
             python3 -m venv "$VENV_PATH"
           fi
