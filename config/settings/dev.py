@@ -6,7 +6,8 @@ ALLOWED_HOSTS = [
     "praxiscrm-bpczdufkc2f3afah.brazilsouth-01.azurewebsites.net",
     "localhost", 
     "127.0.0.1", 
-    "10.0.0.71"
+    "10.0.0.71",
+    "187.77.37.217"
 ]
 
 DATABASES = {
