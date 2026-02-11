@@ -32,22 +32,15 @@ stages:
           echo "🚀 INICIANDO DEPLOY PRAXIS"
           echo "=============================="
 
-           echo "Usuário atual:"
-           whoami
+          echo "Usuário:"
+          id
 
-           echo "Home atual:"
-           pwd
-
-           echo "Listando /home:"
-           ls -la /home
-
-            cd /home/praxis/praxis_crm
-
-            pwd
+          echo "Listando diretório do projeto:"
+          ls -la /home/praxis/praxis_crm
 
           echo "🔄 Atualizando código..."
-          git fetch --all
-          git reset --hard origin/master
+          git -C /home/praxis/praxis_crm fetch --all
+          git -C /home/praxis/praxis_crm reset --hard origin/master
 
           echo "🐍 Ativando ambiente virtual..."
           source venv/bin/activate
