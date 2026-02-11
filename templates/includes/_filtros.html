@@ -1,0 +1,31 @@
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" action="">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label for="filtro-cliente" class="form-label form-label-sm mb-0">Cliente</label>
+                    <select name="cliente" id="filtro-cliente" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        {% for c in clientes %}
+                        <option value="{{ c.pk }}" {% if filtro_cliente == c.pk|stringformat:"d" %}selected{% endif %}>{{ c.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filtro-data-inicial" class="form-label form-label-sm mb-0">Data inicial</label>
+                    <input type="date" name="data_inicial" id="filtro-data-inicial" class="form-control form-control-sm" value="{{ filtro_data_inicial }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="filtro-data-final" class="form-label form-label-sm mb-0">Data final</label>
+                    <input type="date" name="data_final" id="filtro-data-final" class="form-control form-control-sm" value="{{ filtro_data_final }}">
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                    <a href="{{ request.path }}" class="btn btn-sm btn-outline-secondary">Limpar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

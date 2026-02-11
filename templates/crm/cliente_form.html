@@ -7,8 +7,24 @@
 
 <div class="row mt-3">
     <div class="col-md-6">
+        {% if mostrar_confirmacao %}
+        <div class="alert alert-warning">
+            <strong><i class="bi bi-exclamation-triangle"></i> Possível duplicidade encontrada!</strong>
+            <p class="mb-2">Foram encontrados clientes similares no sistema:</p>
+            <ul class="mb-2">
+                {% for dup in duplicados %}
+                <li>{{ dup.nome }} {% if dup.cnpj_cpf %}({{ dup.cnpj_cpf }}){% endif %}</li>
+                {% endfor %}
+            </ul>
+            <p class="mb-0">Se deseja salvar mesmo assim, clique em <strong>"Salvar mesmo assim"</strong>.</p>
+        </div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
+            {% if mostrar_confirmacao %}
+            <input type="hidden" name="confirmar" value="1">
+            {% endif %}
             {% for field in form %}
             <div class="mb-3">
                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
@@ -21,7 +37,13 @@
             </div>
             {% endfor %}
             <div class="d-flex gap-2">
+                {% if mostrar_confirmacao %}
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Salvar mesmo assim
+                </button>
+                {% else %}
                 <button type="submit" class="btn btn-primary">Salvar</button>
+                {% endif %}
                 <a href="{% url 'crm:cliente_list' %}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>

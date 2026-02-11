@@ -9,6 +9,7 @@ from apps.core.enums import EtapaOportunidade, StatusCliente
 from apps.core.mixins import GestorRequiredMixin
 from apps.crm.models import Cliente
 from apps.sales.models import Oportunidade
+from apps.sales.services import calcular_insights_gestao, calcular_tempo_medio_etapas
 
 User = get_user_model()
 
@@ -71,6 +72,10 @@ class DashboardGestorView(GestorRequiredMixin, TemplateView):
         context["oportunidades_paradas"] = paradas
         context["dias_oportunidade_parada"] = DIAS_OPORTUNIDADE_PARADA
         context["total_alerta_disciplina"] = sem_followup + paradas
+
+        # Insights e tempo médio por etapa (Etapa 6)
+        context["tempo_medio_etapas"] = calcular_tempo_medio_etapas()
+        context["insights"] = calcular_insights_gestao()
 
         return context
 

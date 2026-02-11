@@ -6,7 +6,7 @@ from django.db.models import F, Sum
 from django.utils import timezone
 
 from apps.core.enums import EtapaOportunidade
-from apps.sales.models import Interacao, MetaComercial, Oportunidade
+from apps.sales.models import HistoricoEtapa, Interacao, MetaComercial, Oportunidade
 
 ORDEM_ETAPAS = [
     EtapaOportunidade.PROSPECCAO,
@@ -18,7 +18,7 @@ ORDEM_ETAPAS = [
 
 
 def criar_oportunidade(*, titulo, cliente, vendedor, valor_estimado=0, descricao=""):
-    return Oportunidade.objects.create(
+    oportunidade = Oportunidade.objects.create(
         titulo=titulo,
         cliente=cliente,
         vendedor=vendedor,
@@ -26,6 +26,12 @@ def criar_oportunidade(*, titulo, cliente, vendedor, valor_estimado=0, descricao
         descricao=descricao,
         etapa=EtapaOportunidade.PROSPECCAO,
     )
+    HistoricoEtapa.objects.create(
+        oportunidade=oportunidade,
+        etapa_anterior="",
+        etapa_nova=EtapaOportunidade.PROSPECCAO,
+    )
+    return oportunidade
 
 
 def avancar_etapa(*, oportunidade):
@@ -36,18 +42,31 @@ def avancar_etapa(*, oportunidade):
     if oportunidade.etapa == EtapaOportunidade.FECHAMENTO:
         raise ValidationError("Oportunidade já está na etapa final.")
 
+    etapa_anterior = oportunidade.etapa
     idx_atual = ORDEM_ETAPAS.index(oportunidade.etapa)
     oportunidade.etapa = ORDEM_ETAPAS[idx_atual + 1]
     oportunidade.save(update_fields=["etapa", "atualizado_em"])
+    HistoricoEtapa.objects.create(
+        oportunidade=oportunidade,
+        etapa_anterior=etapa_anterior,
+        etapa_nova=oportunidade.etapa,
+    )
     return oportunidade
 
 
-def marcar_perdida(*, oportunidade):
+def marcar_perdida(*, oportunidade, motivo_perda=""):
     """Marca uma oportunidade como perdida."""
     if oportunidade.etapa == EtapaOportunidade.FECHAMENTO:
         raise ValidationError("Oportunidade fechada não pode ser marcada como perdida.")
+    etapa_anterior = oportunidade.etapa
     oportunidade.etapa = EtapaOportunidade.PERDIDA
-    oportunidade.save(update_fields=["etapa", "atualizado_em"])
+    oportunidade.motivo_perda = motivo_perda
+    oportunidade.save(update_fields=["etapa", "motivo_perda", "atualizado_em"])
+    HistoricoEtapa.objects.create(
+        oportunidade=oportunidade,
+        etapa_anterior=etapa_anterior,
+        etapa_nova=EtapaOportunidade.PERDIDA,
+    )
     return oportunidade
 
 
@@ -320,4 +339,128 @@ def contar_oportunidades_alerta(*, dias_parada=7):
         "sem_followup": sem_followup,
         "paradas": paradas,
         "total": sem_followup + paradas,
+    }
+
+
+# =============================================================================
+# INSIGHTS DE GESTÃO (ETAPA 6)
+# =============================================================================
+
+
+def calcular_tempo_medio_etapas():
+    """
+    Calcula o tempo médio (em dias) que as oportunidades ficam em cada etapa.
+    Compatível com SQLite (sem funções de janela).
+    """
+    from collections import defaultdict
+
+    oportunidade_ids = (
+        HistoricoEtapa.objects.values_list("oportunidade_id", flat=True).distinct()
+    )
+
+    tempos_por_etapa = defaultdict(list)
+
+    for op_id in oportunidade_ids:
+        registros = list(
+            HistoricoEtapa.objects.filter(oportunidade_id=op_id).order_by("data_mudanca")
+        )
+        for i, registro in enumerate(registros):
+            if registro.etapa_nova == EtapaOportunidade.PERDIDA:
+                continue
+            if i + 1 < len(registros):
+                dias = (registros[i + 1].data_mudanca - registro.data_mudanca).total_seconds() / 86400
+            else:
+                dias = (timezone.now() - registro.data_mudanca).total_seconds() / 86400
+            tempos_por_etapa[registro.etapa_nova].append(dias)
+
+    resultado = []
+    for etapa_code, etapa_label in EtapaOportunidade.choices:
+        if etapa_code == EtapaOportunidade.PERDIDA:
+            continue
+        tempos = tempos_por_etapa.get(etapa_code, [])
+        if tempos:
+            resultado.append({
+                "etapa": etapa_label,
+                "dias_medio": round(sum(tempos) / len(tempos), 1),
+                "total_registros": len(tempos),
+            })
+        else:
+            resultado.append({
+                "etapa": etapa_label,
+                "dias_medio": 0,
+                "total_registros": 0,
+            })
+
+    return resultado
+
+
+def calcular_insights_gestao():
+    """
+    Calcula três insights para o dashboard do gestor:
+    1. Etapa com mais perdas
+    2. Cobertura pipeline vs meta
+    3. Dias médio parado (oportunidades abertas)
+    """
+    from collections import Counter
+
+    # 1. Etapa com mais perdas
+    perdas = HistoricoEtapa.objects.filter(
+        etapa_nova=EtapaOportunidade.PERDIDA
+    ).values_list("etapa_anterior", flat=True)
+    perdas_list = list(perdas)
+    total_perdas = len(perdas_list)
+
+    insight_perdas = None
+    if total_perdas > 0:
+        counter = Counter(perdas_list)
+        etapa_top, count_top = counter.most_common(1)[0]
+        percentual = round((count_top / total_perdas) * 100, 1)
+        etapa_label = dict(EtapaOportunidade.choices).get(etapa_top, etapa_top)
+        insight_perdas = {
+            "etapa": etapa_label,
+            "percentual": percentual,
+            "total_perdas": total_perdas,
+        }
+
+    # 2. Cobertura pipeline vs meta
+    hoje = timezone.now()
+    valor_pipeline = Oportunidade.objects.exclude(
+        etapa__in=[EtapaOportunidade.FECHAMENTO, EtapaOportunidade.PERDIDA]
+    ).aggregate(total=Sum("valor_estimado"))["total"] or Decimal("0.00")
+
+    soma_metas = MetaComercial.objects.filter(
+        mes=hoje.month, ano=hoje.year
+    ).aggregate(total=Sum("valor_meta"))["total"] or Decimal("0.00")
+
+    insight_cobertura = None
+    if soma_metas > 0:
+        percentual_cobertura = round((valor_pipeline / soma_metas) * 100, 1)
+        insight_cobertura = {
+            "percentual": percentual_cobertura,
+            "valor_pipeline": valor_pipeline,
+            "soma_metas": soma_metas,
+        }
+
+    # 3. Dias médio parado
+    oportunidades_abertas = Oportunidade.objects.exclude(
+        etapa__in=[EtapaOportunidade.FECHAMENTO, EtapaOportunidade.PERDIDA]
+    )
+
+    insight_parada = None
+    total_abertas = oportunidades_abertas.count()
+    if total_abertas > 0:
+        soma_dias = sum(
+            (hoje - op.atualizado_em).total_seconds() / 86400
+            for op in oportunidades_abertas
+        )
+        dias_medio = round(soma_dias / total_abertas, 1)
+        insight_parada = {
+            "dias_medio": dias_medio,
+            "total_abertas": total_abertas,
+        }
+
+    return {
+        "insight_perdas": insight_perdas,
+        "insight_cobertura": insight_cobertura,
+        "insight_parada": insight_parada,
     }

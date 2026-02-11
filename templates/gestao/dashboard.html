@@ -107,6 +107,74 @@
     </div>
 </div>
 
+{% if insights.insight_perdas or insights.insight_cobertura or insights.insight_parada %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Insights</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    {% if insights.insight_perdas %}
+                    <li class="mb-2">
+                        <i class="bi bi-x-circle text-danger"></i>
+                        {{ insights.insight_perdas.percentual }}% das oportunidades perdidas ocorreram na etapa <strong>{{ insights.insight_perdas.etapa }}</strong>
+                        <small class="text-muted">({{ insights.insight_perdas.total_perdas }} perda{{ insights.insight_perdas.total_perdas|pluralize:"s" }} no total)</small>
+                    </li>
+                    {% endif %}
+                    {% if insights.insight_cobertura %}
+                    <li class="mb-2">
+                        <i class="bi bi-shield-check text-primary"></i>
+                        Pipeline atual cobre <strong>{{ insights.insight_cobertura.percentual }}%</strong> da meta
+                    </li>
+                    {% endif %}
+                    {% if insights.insight_parada %}
+                    <li class="mb-2">
+                        <i class="bi bi-clock-history text-warning"></i>
+                        Oportunidades abertas estão paradas em média <strong>{{ insights.insight_parada.dias_medio }} dias</strong>
+                        <small class="text-muted">({{ insights.insight_parada.total_abertas }} oportunidade{{ insights.insight_parada.total_abertas|pluralize:"s" }})</small>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if tempo_medio_etapas %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-hourglass-split"></i> Tempo Médio por Etapa</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Etapa</th>
+                            <th>Tempo Médio (dias)</th>
+                            <th>Registros</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for etapa in tempo_medio_etapas %}
+                        <tr>
+                            <td>{{ etapa.etapa }}</td>
+                            <td>{{ etapa.dias_medio }}</td>
+                            <td>{{ etapa.total_registros }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row mt-4">
     <div class="col-12">
         <div class="card">
