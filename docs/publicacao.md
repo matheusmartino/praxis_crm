@@ -1,170 +1,195 @@
-# 🚀 Deploy em VPS com Django + Azure DevOps
+# 🚀 Publicação do Projeto Praxis
+Django + VPS Hostinger + Azure DevOps + Gunicorn + Nginx
 
-Este documento descreve o **processo completo de publicação** de uma aplicação Django em uma VPS Linux, utilizando **Azure DevOps com self-hosted agent** para CI/CD.
-
-O objetivo é ter um deploy:
-- previsível
-- repetível
-- sem acesso manual em produção
+Este documento descreve o processo completo de publicação da aplicação Praxis em produção utilizando pipeline automatizado.
 
 ---
 
-## 📐 Arquitetura
+# 🧱 Arquitetura Final
 
 ```
-Azure DevOps Pipeline
-        ↓
-Self-hosted Agent (VPS)
-        ↓
-Git pull / install / migrate
-        ↓
-Gunicorn (Django)
-        ↓
-Nginx (80 / 443)
+Azure DevOps (Trigger na master)
+        │
+        ▼
+Azure Agent (ubuntu-latest)
+        │
+        │ SSH
+        ▼
+VPS Hostinger
+        │
+        ├── /home/praxis/praxis_crm
+        │       ├── venv
+        │       ├── manage.py
+        │       ├── requirements.txt
+        │       └── ...
+        │
+        ├── Gunicorn (unix socket)
+        │       └── praxis.sock
+        │
+        └── Nginx (porta 80)
+                └── Proxy para socket
 ```
 
 ---
 
-## 1️⃣ Pré-requisitos
+# 1️⃣ Configuração do Azure DevOps
 
-### VPS
-- Ubuntu 22.04 LTS
-- Acesso SSH
-- IP público
-- Portas 80 e 443 liberadas
+## 🔑 1.1 Criar PAT (Personal Access Token)
 
-### Projeto
-- Django funcional
-- Repositório Git
-- `requirements.txt` atualizado
+No Azure DevOps:
+
+1. Clicar na foto de perfil (canto superior direito)
+2. User Settings
+3. Personal Access Tokens
+4. New Token
+
+Permissões mínimas:
+- Code (Read & Write)
+
+Salvar o token.
 
 ---
 
-## 2️⃣ Acesso inicial à VPS
+## 🔐 1.2 Gerar chave SSH na VPS
+
+Na VPS:
 
 ```bash
-ssh root@IP_DA_VPS
-apt update && apt upgrade -y
+ssh-keygen -t rsa -b 4096 -C "vps-deploy"
+```
+
+Arquivos gerados:
+
+```
+~/.ssh/id_rsa
+~/.ssh/id_rsa.pub
 ```
 
 ---
 
-## 3️⃣ Criar usuário de deploy
+## 🔗 1.3 Adicionar chave pública no Azure Repos
 
-Nunca rode produção como `root`.
+Copiar conteúdo de:
 
 ```bash
-adduser deploy
-usermod -aG sudo deploy
-exit
-ssh deploy@IP_DA_VPS
+cat ~/.ssh/id_rsa.pub
+```
+
+No Azure DevOps:
+
+- Repos
+- Project Settings
+- SSH Public Keys
+- Add
+
+Colar chave pública.
+
+---
+
+## 🔧 1.4 Configurar remote do Git para SSH
+
+```bash
+git remote set-url origin git@ssh.dev.azure.com:v3/ORG/PROJETO/praxis_crm
+```
+
+Testar:
+
+```bash
+git fetch
+```
+
+Se funcionar sem pedir senha, está correto.
+
+---
+
+## 🔌 1.5 Criar Service Connection SSH no Azure
+
+No Azure DevOps:
+
+1. Project Settings
+2. Service Connections
+3. New Service Connection
+4. SSH
+
+Preencher:
+
+- Host: IP da VPS
+- Port: 22
+- Username: praxis
+- Private Key: conteúdo do ~/.ssh/id_rsa
+- Passphrase: se houver
+
+Salvar como:
+```
+praxis-vps-ssh
 ```
 
 ---
 
-## 4️⃣ Instalar dependências do sistema
+# 2️⃣ Preparação da VPS
+
+## Atualizar sistema
 
 ```bash
-sudo apt install -y \
-  python3 python3-pip python3-venv \
-  nginx git curl unzip build-essential
+sudo apt update
+sudo apt upgrade -y
+```
+
+## Instalar dependências
+
+```bash
+sudo apt install python3 python3-venv python3-pip nginx git -y
 ```
 
 ---
 
-## 5️⃣ Estrutura do projeto
+# 3️⃣ Clonar projeto
 
 ```bash
-mkdir ~/apps
-cd ~/apps
-git clone https://github.com/seuusuario/seuprojeto.git
-cd seuprojeto
+cd /home/praxis
+git clone git@ssh.dev.azure.com:v3/ORG/PROJETO/praxis_crm
 ```
 
 ---
 
-## 6️⃣ Criar ambiente virtual
+# 4️⃣ Criar ambiente virtual
 
 ```bash
+cd /home/praxis/praxis_crm
 python3 -m venv venv
 source venv/bin/activate
-pip install --upgrade pip
 pip install -r requirements.txt
+pip install gunicorn
 ```
+
+Adicionar gunicorn ao requirements.txt.
 
 ---
 
-## 7️⃣ Variáveis de ambiente
+# 5️⃣ Configurar systemd
 
-Adicionar no `~/.bashrc` do usuário `deploy`:
-
-```bash
-export DJANGO_SETTINGS_MODULE=seuprojeto.settings
-export SECRET_KEY='sua-chave-secreta'
-export DEBUG=False
-export ALLOWED_HOSTS=seusite.com,IP_DA_VPS
-```
+Arquivo:
 
 ```bash
-source ~/.bashrc
+sudo nano /etc/systemd/system/praxis.service
 ```
 
----
-
-## 8️⃣ Ajustes no Django
-
-No `settings.py`:
-
-```python
-DEBUG = False
-STATIC_ROOT = BASE_DIR / "staticfiles"
-```
-
-Executar:
-
-```bash
-python manage.py migrate
-python manage.py collectstatic
-python manage.py createsuperuser
-```
-
----
-
-## 9️⃣ Teste manual com Gunicorn
-
-```bash
-gunicorn seuprojeto.wsgi:application --bind 0.0.0.0:8000
-```
-
-Acessar:
-```
-http://IP_DA_VPS:8000
-```
-
-Se funcionar, interrompa com `Ctrl+C`.
-
----
-
-## 🔟 Gunicorn como serviço (systemd)
-
-Criar o serviço:
-
-```bash
-sudo nano /etc/systemd/system/gunicorn.service
-```
+Conteúdo:
 
 ```ini
 [Unit]
-Description=gunicorn
+Description=Praxis Django App
 After=network.target
 
 [Service]
-User=deploy
+User=praxis
 Group=www-data
-WorkingDirectory=/home/deploy/apps/seuprojeto
-ExecStart=/home/deploy/apps/seuprojeto/venv/bin/gunicorn \
-          seuprojeto.wsgi:application \
-          --bind unix:/run/gunicorn.sock
+WorkingDirectory=/home/praxis/praxis_crm
+
+ExecStart=/home/praxis/praxis_crm/venv/bin/gunicorn \
+          --workers 3 \
+          --bind unix:/home/praxis/praxis_crm/praxis.sock \
+          config.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
@@ -173,157 +198,153 @@ WantedBy=multi-user.target
 Ativar:
 
 ```bash
-sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
-sudo systemctl start gunicorn
-sudo systemctl enable gunicorn
+sudo systemctl start praxis
+sudo systemctl enable praxis
 ```
 
 ---
 
-## 1️⃣1️⃣ Configurar Nginx
+# 6️⃣ Configurar Nginx
+
+Arquivo:
 
 ```bash
-sudo nano /etc/nginx/sites-available/seuprojeto
+sudo nano /etc/nginx/sites-available/praxis
 ```
+
+Conteúdo:
 
 ```nginx
 server {
     listen 80;
-    server_name seusite.com IP_DA_VPS;
+    server_name 187.77.37.217;
 
     location /static/ {
-        root /home/deploy/apps/seuprojeto;
+        root /home/praxis/praxis_crm;
     }
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/run/gunicorn.sock;
+        proxy_pass http://unix:/home/praxis/praxis_crm/praxis.sock;
     }
 }
 ```
 
-Ativar o site:
+Ativar:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/seuprojeto /etc/nginx/sites-enabled
+sudo rm /etc/nginx/sites-enabled/default
+sudo ln -s /etc/nginx/sites-available/praxis /etc/nginx/sites-enabled
 sudo nginx -t
 sudo systemctl restart nginx
 ```
 
 ---
 
-## 1️⃣2️⃣ Firewall
+# 7️⃣ Pipeline Azure DevOps
 
-```bash
-sudo ufw allow OpenSSH
-sudo ufw allow 'Nginx Full'
-sudo ufw enable
-```
-
----
-
-## 1️⃣3️⃣ Azure DevOps – Self-hosted Agent
-
-### Criar usuário do agent
-
-```bash
-sudo adduser azagent
-sudo usermod -aG sudo azagent
-su - azagent
-```
-
-### Criar Agent Pool
-No Azure DevOps:
-- Organization Settings
-- Agent Pools
-- Criar pool: `vps-production`
-
-### Criar PAT
-- User Settings → Personal Access Tokens
-- Permissão: **Agent Pools (Read & manage)**
-
-### Instalar o agent
-
-```bash
-mkdir ~/agent && cd ~/agent
-wget https://vstsagentpackage.azureedge.net/agent/3.xx.x/vsts-agent-linux-x64-3.xx.x.tar.gz
-tar zxvf vsts-agent-linux-x64-*.tar.gz
-./config.sh
-```
-
-Respostas sugeridas:
-```
-Server URL: https://dev.azure.com/SUA_ORG
-Authentication: PAT
-Agent pool: vps-production
-Run agent as service: Y
-```
-
----
-
-## 1️⃣4️⃣ Permissões para deploy
-
-```bash
-sudo usermod -aG deploy azagent
-sudo visudo
-```
-
-Adicionar:
-
-```bash
-azagent ALL=(ALL) NOPASSWD: /bin/systemctl restart gunicorn
-```
-
----
-
-## 1️⃣5️⃣ Pipeline Azure DevOps (YAML)
+Arquivo `azure-pipelines.yml`:
 
 ```yaml
 trigger:
-  - main
+- master
 
 pool:
-  name: vps-production
+  vmImage: 'ubuntu-latest'
 
-steps:
-  - checkout: self
+stages:
+- stage: Deploy
+  displayName: "Deploy para VPS"
+  jobs:
+  - job: DeployJob
+    steps:
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'praxis-vps-ssh'
+        runOptions: 'commands'
+        commands: |
+          set -e
 
-  - script: |
-      cd /home/deploy/apps/seuprojeto
-      git pull
-      source venv/bin/activate
-      pip install -r requirements.txt
-      python manage.py migrate
-      python manage.py collectstatic --noinput
-      sudo systemctl restart gunicorn
-    displayName: Deploy Django em VPS
+          git -C /home/praxis/praxis_crm fetch --all
+          git -C /home/praxis/praxis_crm reset --hard origin/master
+
+          source /home/praxis/praxis_crm/venv/bin/activate
+
+          pip install --upgrade pip
+          pip install --no-cache-dir -r /home/praxis/praxis_crm/requirements.txt
+
+          python /home/praxis/praxis_crm/manage.py migrate --noinput
+          python /home/praxis/praxis_crm/manage.py collectstatic --noinput
+
+          sudo systemctl restart praxis
 ```
 
 ---
 
-## ✅ Checklist final
+# ❓ FAQ – Problemas Enfrentados
 
-- [ ] VPS configurada
-- [ ] Django rodando com Gunicorn
-- [ ] Nginx ativo
-- [ ] Agent Azure DevOps online
-- [ ] Pipeline executando com sucesso
-- [ ] Deploy sem acesso manual
+## 502 Bad Gateway
 
----
-
-## 🧠 Boas práticas
-
-- Nunca rodar produção como root
-- Um agent por ambiente (staging ≠ produção)
-- Token com expiração curta
-- Backup antes de migrations
-- Se está funcionando, não mexa sem motivo
+### Gunicorn não instalado
+```
+venv/bin/gunicorn: No such file
+```
+Solução:
+```
+pip install gunicorn
+```
 
 ---
 
-## 📌 Observação final
+### Caminho errado (case sensitive)
+```
+praxis_CRM vs praxis_crm
+```
+Linux diferencia maiúsculas.
 
-Este modelo prioriza **simplicidade, estabilidade e controle**.  
-Escalabilidade e orquestração vêm depois — quando o produto justificar.
+---
+
+### Permissão do socket
+Garantir:
+```
+Group=www-data
+```
+no systemd.
+
+---
+
+## 400 Bad Request
+
+Problema:
+```
+ALLOWED_HOSTS
+```
+
+Solução:
+```python
+ALLOWED_HOSTS = ["IP_DO_SERVIDOR"]
+```
+
+---
+
+## venv/bin/activate: No such file
+
+Criar ambiente:
+```
+python3 -m venv venv
+```
+
+---
+
+# 🎯 Resultado Final
+
+Deploy automatizado funcionando com:
+
+- Azure DevOps
+- SSH seguro
+- Gunicorn via socket
+- Nginx como proxy reverso
+- Serviço gerenciado por systemd
+
+Infraestrutura estável e pronta para produção.
