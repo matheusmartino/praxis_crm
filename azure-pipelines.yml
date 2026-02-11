@@ -12,7 +12,7 @@ stages:
     displayName: "🔧 Executando deploy remoto"
     steps:
 
-    # 🔵 Define versão do Python no agente da Microsoft
+    # 🔵 Define versão do Python no agente (não afeta a VPS, mas mantém padrão)
     - task: UsePythonVersion@0
       displayName: "🐍 Definindo Python 3.12"
       inputs:
@@ -32,45 +32,33 @@ stages:
           echo "🚀 INICIANDO DEPLOY PRAXIS"
           echo "=============================="
 
-          PROJECT_PATH="$HOME/praxis_crm"          
-          VENV_PATH="$PROJECT_PATH/venv"
-
-          find /home -maxdepth 2 -type d -name "praxis_crm"
-
-          echo "PROJECT_PATH=$PROJECT_PATH"
-
-          echo "👤 Usuário:"
+          echo "👤 Usuário atual:"
           id
 
-          echo "🏠 HOME:"
-          echo $HOME
-
           echo "📂 Verificando diretório do projeto..."
-          ls -la "$HOME"
-          ls -la "$HOME/praxis_crm"
+          ls -la /home/praxis/praxis_crm
 
           echo "🔄 Atualizando código..."
-          git -C "$PROJECT_PATH" fetch --all
-          git -C "$PROJECT_PATH" reset --hard origin/master
+          git -C /home/praxis/praxis_crm fetch --all
+          git -C /home/praxis/praxis_crm reset --hard origin/master
 
           echo "🐍 Verificando ambiente virtual..."
-
-          if [ ! -d "$VENV_PATH" ]; then
+          if [ ! -d "/home/praxis/praxis_crm/venv" ]; then
             echo "Criando ambiente virtual..."
-            python3 -m venv "$VENV_PATH"
+            python3 -m venv /home/praxis/praxis_crm/venv
           fi
 
           echo "⬆️ Atualizando pip..."
-          "$VENV_PATH/bin/pip" install --upgrade pip
+          /home/praxis/praxis_crm/venv/bin/pip install --upgrade pip
 
           echo "📦 Instalando dependências..."
-          "$VENV_PATH/bin/pip" install -r "$PROJECT_PATH/requirements.txt"
+          /home/praxis/praxis_crm/venv/bin/pip install -r /home/praxis/praxis_crm/requirements.txt
 
           echo "🗄 Aplicando migrations..."
-          "$VENV_PATH/bin/python" "$PROJECT_PATH/manage.py" migrate --noinput
+          /home/praxis/praxis_crm/venv/bin/python /home/praxis/praxis_crm/manage.py migrate --noinput
 
           echo "🗂 Coletando estáticos..."
-          "$VENV_PATH/bin/python" "$PROJECT_PATH/manage.py" collectstatic --noinput
+          /home/praxis/praxis_crm/venv/bin/python /home/praxis/praxis_crm/manage.py collectstatic --noinput
 
           echo "🔁 Reiniciando serviço..."
           sudo systemctl restart praxis
