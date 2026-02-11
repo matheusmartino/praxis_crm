@@ -54,7 +54,7 @@ stages:
           git -C $HOME/praxis_crm reset --hard origin/master
 
           echo "🐍 Ativando ambiente virtual..."
-          source venv/bin/activate
+          source $HOME/praxis_crm/venv/bin/activate
 
           echo "📦 Instalando dependências..."
           pip install --upgrade pip
