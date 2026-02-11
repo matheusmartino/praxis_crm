@@ -35,6 +35,8 @@ stages:
           PROJECT_PATH="$HOME/praxis_crm"          
           VENV_PATH="$PROJECT_PATH/venv"
 
+          find /home -maxdepth 2 -type d -name "praxis_crm"
+
           echo "PROJECT_PATH=$PROJECT_PATH"
 
           echo "👤 Usuário:"
