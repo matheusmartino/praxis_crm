@@ -34,6 +34,10 @@ stages:
 
           cd /home/praxis/praxis_crm
 
+           echo "📂 Diretório atual:"
+           pwd
+           ls -la
+
           echo "🔄 Atualizando código..."
           git fetch --all
           git reset --hard origin/master
