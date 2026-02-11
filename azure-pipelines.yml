@@ -44,7 +44,8 @@ stages:
           echo $HOME
 
           echo "📂 Verificando diretório do projeto..."
-          ls -la "$PROJECT_PATH"
+          ls -la "$HOME"
+          ls -la "$HOME/praxis_crm"
 
           echo "🔄 Atualizando código..."
           git -C "$PROJECT_PATH" fetch --all
