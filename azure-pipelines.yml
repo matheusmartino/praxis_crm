@@ -32,8 +32,10 @@ stages:
           echo "🚀 INICIANDO DEPLOY PRAXIS"
           echo "=============================="
 
-          PROJECT_PATH="$HOME/praxis_crm"
+          PROJECT_PATH="$HOME/praxis_crm"          
           VENV_PATH="$PROJECT_PATH/venv"
+
+          echo "PROJECT_PATH=$PROJECT_PATH"
 
           echo "👤 Usuário:"
           id
