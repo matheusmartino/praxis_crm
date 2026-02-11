@@ -1,26 +1,58 @@
 trigger:
-- main
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
 
 stages:
 - stage: Deploy
-  displayName: Deploy to VPS
+  displayName: "🚀 Deploy para VPS"
   jobs:
   - job: DeployJob
+    displayName: "🔧 Executando deploy remoto"
     steps:
 
+    # 🔵 Define versão do Python no agente da Microsoft
+    - task: UsePythonVersion@0
+      displayName: "🐍 Definindo Python 3.12"
+      inputs:
+        versionSpec: '3.12'
+        addToPath: true
+
+    # 🔵 Deploy via SSH
     - task: SSH@0
+      displayName: "🔐 Conectando via SSH e executando deploy"
       inputs:
         sshEndpoint: 'praxis-vps-ssh'
         runOptions: 'commands'
         commands: |
+          set -e
+
+          echo "=============================="
+          echo "🚀 INICIANDO DEPLOY PRAXIS"
+          echo "=============================="
+
           cd /home/praxis/praxis_crm
-          git pull origin main
+
+          echo "🔄 Atualizando código..."
+          git fetch --all
+          git reset --hard origin/master
+
+          echo "🐍 Ativando ambiente virtual..."
           source venv/bin/activate
+
+          echo "📦 Instalando dependências..."
+          pip install --upgrade pip
           pip install -r requirements.txt
+
+          echo "🗄 Aplicando migrations..."
           python manage.py migrate --noinput
+
+          echo "🗂 Coletando estáticos..."
           python manage.py collectstatic --noinput
+
+          echo "🔁 Reiniciando serviço..."
           sudo systemctl restart praxis
+
+          echo "✅ DEPLOY FINALIZADO"
         readyTimeout: '20000'
