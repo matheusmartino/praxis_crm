@@ -32,11 +32,18 @@ stages:
           echo "🚀 INICIANDO DEPLOY PRAXIS"
           echo "=============================="
 
-          cd /home/praxis/praxis_crm
+           echo "Usuário atual:"
+           whoami
 
-           echo "📂 Diretório atual:"
+           echo "Home atual:"
            pwd
-           ls -la
+
+           echo "Listando /home:"
+           ls -la /home
+
+            cd /home/praxis/praxis_crm
+
+            pwd
 
           echo "🔄 Atualizando código..."
           git fetch --all
