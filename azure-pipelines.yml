@@ -32,49 +32,46 @@ stages:
           echo "🚀 INICIANDO DEPLOY PRAXIS"
           echo "=============================="
 
-          echo "Usuário:"
+          PROJECT_PATH="$HOME/praxis_crm"
+          VENV_PATH="$PROJECT_PATH/venv"
+
+          echo "👤 Usuário:"
           id
 
-          set -e
-
-          echo "Usuário:"
-          id
-
-          echo "HOME:"
+          echo "🏠 HOME:"
           echo $HOME
 
-          echo "Listando HOME:"
-          ls -la $HOME
-
-          echo "Listando diretório do projeto:"
-          ls -la /home/praxis/praxis_crm
+          echo "📂 Verificando diretório do projeto..."
+          ls -la "$PROJECT_PATH"
 
           echo "🔄 Atualizando código..."
-          git -C $HOME/praxis_crm fetch --all
-          git -C $HOME/praxis_crm reset --hard origin/master
+          git -C "$PROJECT_PATH" fetch --all
+          git -C "$PROJECT_PATH" reset --hard origin/master
 
-          echo "🐍 Ativando ambiente virtual..."
-
-          VENV_PATH="$HOME/praxis_crm/venv"
+          echo "🐍 Verificando ambiente virtual..."
 
           if [ ! -d "$VENV_PATH" ]; then
             echo "Criando ambiente virtual..."
             python3 -m venv "$VENV_PATH"
           fi
-          source $HOME/praxis_crm/venv/bin/activate
+
+          echo "⬆️ Atualizando pip..."
+          "$VENV_PATH/bin/pip" install --upgrade pip
 
           echo "📦 Instalando dependências..."
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          "$VENV_PATH/bin/pip" install -r "$PROJECT_PATH/requirements.txt"
 
           echo "🗄 Aplicando migrations..."
-          python manage.py migrate --noinput
+          "$VENV_PATH/bin/python" "$PROJECT_PATH/manage.py" migrate --noinput
 
           echo "🗂 Coletando estáticos..."
-          python manage.py collectstatic --noinput
+          "$VENV_PATH/bin/python" "$PROJECT_PATH/manage.py" collectstatic --noinput
 
           echo "🔁 Reiniciando serviço..."
           sudo systemctl restart praxis
 
+          echo "=============================="
           echo "✅ DEPLOY FINALIZADO"
+          echo "=============================="
+
         readyTimeout: '20000'
