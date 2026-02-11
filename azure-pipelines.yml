@@ -35,6 +35,17 @@ stages:
           echo "Usuário:"
           id
 
+          set -e
+
+          echo "Usuário:"
+          id
+
+          echo "HOME:"
+          echo $HOME
+
+          echo "Listando HOME:"
+          ls -la $HOME
+
           echo "Listando diretório do projeto:"
           ls -la /home/praxis/praxis_crm
 
