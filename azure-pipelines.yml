@@ -1,33 +1,26 @@
 trigger:
-  - main
+- main
 
 pool:
-  name: Default
+  vmImage: 'ubuntu-latest'
 
-steps:
-  - checkout: self
+stages:
+- stage: Deploy
+  displayName: Deploy to VPS
+  jobs:
+  - job: DeployJob
+    steps:
 
-  - script: |
-      echo "===> Sincronizando código para produção"
-      rsync -av --delete ./ /home/azagent/apps/praxis_CRM/
-    displayName: Rsync código para VPS
-
-  - script: |
-      echo "===> Ativando venv e instalando dependências"
-      cd /home/azagent/apps/praxis_CRM
-      source venv/bin/activate
-      pip install -r requirements.txt
-    displayName: Instalar dependências
-
-  - script: |
-      echo "===> Rodando migrations e collectstatic"
-      cd /home/azagent/apps/praxis_CRM
-      source venv/bin/activate
-      python manage.py migrate
-      python manage.py collectstatic --noinput
-    displayName: Migrate + Collectstatic
-
-  - script: |
-      echo "===> Reiniciando Gunicorn"
-      sudo systemctl restart gunicorn
-    displayName: Restart Gunicorn
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'praxis-vps-ssh'
+        runOptions: 'commands'
+        commands: |
+          cd /home/praxis/praxis_crm
+          git pull origin main
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python manage.py migrate --noinput
+          python manage.py collectstatic --noinput
+          sudo systemctl restart praxis
+        readyTimeout: '20000'
