@@ -29,6 +29,15 @@ class EtapaOportunidade(models.TextChoices):
     PERDIDA = "PERDIDA", "Perdida"
 
 
+class MotivoPerdaOportunidade(models.TextChoices):
+    PRECO = "PRECO", "Preço"
+    PRAZO = "PRAZO", "Prazo"
+    CONCORRENCIA = "CONCORRENCIA", "Concorrência"
+    DESISTENCIA = "DESISTENCIA", "Desistência"
+    SEM_RETORNO = "SEM_RETORNO", "Sem retorno"
+    OUTRO = "OUTRO", "Outro"
+
+
 class PerfilUsuario(models.TextChoices):
     VENDEDOR = "VENDEDOR", "Vendedor"
     GESTOR = "GESTOR", "Gestor Comercial"

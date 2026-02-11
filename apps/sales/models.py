@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from apps.core.enums import EtapaOportunidade, TipoInteracao
+from apps.core.enums import EtapaOportunidade, MotivoPerdaOportunidade, TipoInteracao
 from apps.crm.models import Cliente
 
 
@@ -24,6 +24,13 @@ class Oportunidade(models.Model):
         choices=EtapaOportunidade.choices,
         default=EtapaOportunidade.PROSPECCAO,
         verbose_name="Etapa",
+    )
+    motivo_perda = models.CharField(
+        max_length=13,
+        choices=MotivoPerdaOportunidade.choices,
+        blank=True,
+        default="",
+        verbose_name="Motivo da perda",
     )
     valor_estimado = models.DecimalField(
         max_digits=12,
@@ -139,3 +146,33 @@ class MetaComercial(models.Model):
 
     def __str__(self):
         return f"{self.vendedor.get_full_name() or self.vendedor.username} — {self.get_mes_display()}/{self.ano}"
+
+
+class HistoricoEtapa(models.Model):
+    oportunidade = models.ForeignKey(
+        Oportunidade,
+        on_delete=models.CASCADE,
+        related_name="historico_etapas",
+        verbose_name="Oportunidade",
+    )
+    etapa_anterior = models.CharField(
+        max_length=12,
+        choices=EtapaOportunidade.choices,
+        blank=True,
+        default="",
+        verbose_name="Etapa anterior",
+    )
+    etapa_nova = models.CharField(
+        max_length=12,
+        choices=EtapaOportunidade.choices,
+        verbose_name="Etapa nova",
+    )
+    data_mudanca = models.DateTimeField(auto_now_add=True, verbose_name="Data da mudança")
+
+    class Meta:
+        verbose_name = "Histórico de Etapa"
+        verbose_name_plural = "Históricos de Etapa"
+        ordering = ["data_mudanca"]
+
+    def __str__(self):
+        return f"{self.oportunidade.titulo}: {self.etapa_anterior} → {self.etapa_nova}"

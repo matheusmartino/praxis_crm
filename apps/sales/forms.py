@@ -26,6 +26,19 @@ class InteracaoForm(forms.ModelForm):
         }
 
 
+class MotivoPerdaForm(forms.ModelForm):
+    class Meta:
+        model = Oportunidade
+        fields = ["motivo_perda"]
+        widgets = {
+            "motivo_perda": forms.Select(attrs={"class": "form-select"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["motivo_perda"].required = True
+
+
 class FollowUpForm(forms.ModelForm):
     """Formulário para editar campos de follow-up."""
 

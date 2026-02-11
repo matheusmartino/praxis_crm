@@ -38,6 +38,11 @@
 
             <dt class="col-sm-3">Criado em</dt>
             <dd class="col-sm-9">{{ oportunidade.criado_em|date:"d/m/Y H:i" }}</dd>
+
+            {% if oportunidade.etapa == "PERDIDA" and oportunidade.motivo_perda %}
+            <dt class="col-sm-3">Motivo da perda</dt>
+            <dd class="col-sm-9">{{ oportunidade.get_motivo_perda_display }}</dd>
+            {% endif %}
         </dl>
     </div>
 </div>
@@ -101,12 +106,9 @@
                 <i class="bi bi-arrow-right-circle"></i> Avançar etapa
             </button>
         </form>
-        <form method="post" action="{% url 'sales:oportunidade_perdida' oportunidade.pk %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-sm" data-confirm="Deseja marcar esta oportunidade como perdida?">
-                <i class="bi bi-x-circle"></i> Marcar como perdida
-            </button>
-        </form>
+        <a href="{% url 'sales:oportunidade_perdida' oportunidade.pk %}" class="btn btn-danger btn-sm">
+            <i class="bi bi-x-circle"></i> Marcar como perdida
+        </a>
     {% else %}
         <span class="text-muted">Esta oportunidade está finalizada.</span>
     {% endif %}

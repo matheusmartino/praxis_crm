@@ -9,7 +9,7 @@ from django.views.generic import CreateView, DetailView, ListView, TemplateView
 from apps.core.mixins import GestorRequiredMixin, VendedorRequiredMixin, VendedorWriteMixin
 from apps.crm.models import Cliente
 from apps.sales.models import Interacao, MetaComercial, Oportunidade
-from apps.sales.forms import FollowUpForm, InteracaoForm, OportunidadeForm
+from apps.sales.forms import FollowUpForm, InteracaoForm, MotivoPerdaForm, OportunidadeForm
 from apps.sales.services import (
     atualizar_follow_up,
     avancar_etapa,
@@ -129,17 +129,40 @@ class OportunidadeAvancarView(VendedorWriteMixin, View):
 class OportunidadePerdidaView(VendedorWriteMixin, View):
     redirect_url_name = "sales:oportunidade_list"  # Redirecionamento para GESTOR
 
-    def post(self, request, pk):
-        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+    def _check_owner(self, request, oportunidade):
         if hasattr(request.user, "perfil") and request.user.perfil.is_vendedor:
             if oportunidade.vendedor != request.user:
                 from django.core.exceptions import PermissionDenied
                 raise PermissionDenied
-        try:
-            marcar_perdida(oportunidade=oportunidade)
-        except ValidationError as e:
-            messages.error(request, e.message)
-        return redirect("sales:oportunidade_detail", pk=pk)
+
+    def _render(self, request, oportunidade, form):
+        from django.shortcuts import render
+        return render(request, "sales/oportunidade_perdida_form.html", {
+            "oportunidade": oportunidade,
+            "form": form,
+        })
+
+    def get(self, request, pk):
+        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        self._check_owner(request, oportunidade)
+        form = MotivoPerdaForm()
+        return self._render(request, oportunidade, form)
+
+    def post(self, request, pk):
+        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        self._check_owner(request, oportunidade)
+        form = MotivoPerdaForm(request.POST)
+        if form.is_valid():
+            try:
+                marcar_perdida(
+                    oportunidade=oportunidade,
+                    motivo_perda=form.cleaned_data["motivo_perda"],
+                )
+                return redirect("sales:oportunidade_detail", pk=pk)
+            except ValidationError as e:
+                messages.error(request, e.message)
+                return redirect("sales:oportunidade_detail", pk=pk)
+        return self._render(request, oportunidade, form)
 
 
 class InteracaoListView(VendedorRequiredMixin, ListView):

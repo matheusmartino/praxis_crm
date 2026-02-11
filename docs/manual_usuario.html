@@ -309,7 +309,7 @@
 <div class="cover">
     <h1>Praxis CRM</h1>
     <p class="subtitle">Manual do Usuário</p>
-    <p class="version">Versão 3.0</p>
+    <p class="version">Versão 4.0</p>
     <p class="date">Fevereiro de 2026</p>
 </div>
 
@@ -329,7 +329,8 @@
         <li><strong>10.</strong> Lembretes e Alertas</li>
         <li><strong>11.</strong> Filtros e Busca</li>
         <li><strong>12.</strong> Sustentação da Disciplina (Etapa 5)</li>
-        <li><strong>13.</strong> Perguntas Frequentes</li>
+        <li><strong>13.</strong> Qualidade de Dados & Leitura Inteligente (Etapa 6)</li>
+        <li><strong>14.</strong> Perguntas Frequentes</li>
     </ul>
 </div>
 
@@ -436,6 +437,18 @@
     </tr>
     <tr>
         <td>Ver oportunidades sem follow-up</td>
+        <td>Não</td>
+        <td>Sim</td>
+        <td>Sim</td>
+    </tr>
+    <tr>
+        <td>Marcar oportunidade como perdida (com motivo)</td>
+        <td>Sim (suas oportunidades)</td>
+        <td>Não</td>
+        <td>Sim</td>
+    </tr>
+    <tr>
+        <td>Ver insights e tempo médio por etapa</td>
         <td>Não</td>
         <td>Sim</td>
         <td>Sim</td>
@@ -1409,8 +1422,157 @@ Vendedor entra no sistema
     <strong>Resultado esperado:</strong> Com o uso diário do lembrete visual, dos e-mails e dos filtros, o vendedor mantém todas as oportunidades em movimento, sem depender de memória ou controles externos.
 </div>
 
-<!-- 13. PERGUNTAS FREQUENTES -->
-<h1>13. Perguntas Frequentes</h1>
+<!-- 13. QUALIDADE DE DADOS & LEITURA INTELIGENTE (ETAPA 6) -->
+<h1>13. Qualidade de Dados & Leitura Inteligente (Etapa 6)</h1>
+
+<p>A Etapa 6 do Praxis CRM foca em melhorar a <strong>qualidade dos dados</strong> e facilitar a <strong>leitura inteligente</strong> das informações. O objetivo é ajudar a equipe a tomar decisões mais rápidas e embasadas, sem adicionar burocracia.</p>
+
+<div class="info-box">
+    <strong>Princípio da Etapa 6:</strong> Dados de qualidade geram decisões melhores. O sistema guia, não bloqueia. Insights são para aprendizado, não para punição.
+</div>
+
+<h2>13.1 Motivo de Perda</h2>
+
+<p>Ao marcar uma oportunidade como perdida, o vendedor agora deve informar o <strong>motivo da perda</strong>. Isso permite que a equipe analise os padrões e tome ações corretivas.</p>
+
+<p><strong>Como funciona:</strong></p>
+
+<ol>
+    <li>Na tela de detalhes da oportunidade, clique em <strong>Marcar como perdida</strong></li>
+    <li>O sistema abrirá um formulário pedindo o motivo</li>
+    <li>Selecione o motivo principal e confirme</li>
+</ol>
+
+<p>Motivos disponíveis:</p>
+
+<table>
+    <tr>
+        <th>Motivo</th>
+        <th>Quando usar</th>
+    </tr>
+    <tr>
+        <td>Preço</td>
+        <td>Cliente achou caro ou obteve preço melhor</td>
+    </tr>
+    <tr>
+        <td>Prazo</td>
+        <td>Não foi possível atender o prazo do cliente</td>
+    </tr>
+    <tr>
+        <td>Concorrência</td>
+        <td>Cliente fechou com outro fornecedor</td>
+    </tr>
+    <tr>
+        <td>Desistência</td>
+        <td>Cliente desistiu da compra</td>
+    </tr>
+    <tr>
+        <td>Sem retorno</td>
+        <td>Cliente parou de responder</td>
+    </tr>
+    <tr>
+        <td>Outro</td>
+        <td>Motivo não listado acima</td>
+    </tr>
+</table>
+
+<div class="info-box">
+    <strong>Por que informar o motivo?</strong> Ao acumular dados de perdas, o gestor consegue identificar padrões. Se muitas oportunidades são perdidas por preço, pode ser hora de revisar a política comercial. Se muitas são perdidas por "sem retorno", pode indicar falha no follow-up.
+</div>
+
+<h2>13.2 Aviso de Duplicidade</h2>
+
+<p>Ao cadastrar um novo cliente, o sistema verifica se já existe um cliente com nome ou CNPJ/CPF semelhante. Se encontrar, exibe um <strong>aviso amarelo</strong> listando os possíveis duplicados.</p>
+
+<p><strong>Comportamento:</strong></p>
+
+<ul>
+    <li>O aviso <strong>não bloqueia</strong> o cadastro</li>
+    <li>O vendedor pode revisar os duplicados e decidir se deseja continuar</li>
+    <li>Para confirmar, basta clicar em <strong>Salvar mesmo assim</strong></li>
+    <li>Se não houver duplicados, o formulário funciona normalmente</li>
+</ul>
+
+<div class="warning-box">
+    <strong>Atenção:</strong> Este aviso é preventivo. Cadastros duplicados dificultam a análise de dados e podem gerar confusão nas oportunidades. Sempre verifique antes de confirmar.
+</div>
+
+<h2>13.3 Tempo Médio por Etapa</h2>
+
+<p>No dashboard do gestor, uma nova tabela mostra quanto tempo, em média, as oportunidades ficam em cada etapa do pipeline.</p>
+
+<table>
+    <tr>
+        <th>Coluna</th>
+        <th>Descrição</th>
+    </tr>
+    <tr>
+        <td>Etapa</td>
+        <td>Nome da etapa do pipeline</td>
+    </tr>
+    <tr>
+        <td>Tempo Médio (dias)</td>
+        <td>Média de dias que as oportunidades ficam na etapa</td>
+    </tr>
+    <tr>
+        <td>Registros</td>
+        <td>Quantidade de oportunidades usadas no cálculo</td>
+    </tr>
+</table>
+
+<div class="success-box">
+    <strong>Como interpretar:</strong> Se uma etapa tem tempo médio muito alto, pode indicar um gargalo no processo. Por exemplo, se oportunidades ficam paradas na "Proposta" por muitos dias, pode ser necessário agilizar a elaboração de propostas.
+</div>
+
+<h2>13.4 Insights do Dashboard</h2>
+
+<p>O dashboard do gestor agora exibe <strong>três insights automáticos</strong> baseados nos dados do CRM:</p>
+
+<table>
+    <tr>
+        <th>Insight</th>
+        <th>O que mostra</th>
+        <th>Para quem</th>
+    </tr>
+    <tr>
+        <td>Etapa com mais perdas</td>
+        <td>Em qual etapa do pipeline as oportunidades mais são perdidas</td>
+        <td><span class="badge badge-gestor">GESTOR</span> <span class="badge badge-admin">ADMIN</span></td>
+    </tr>
+    <tr>
+        <td>Cobertura de pipeline</td>
+        <td>Quanto do pipeline cobre a meta total do mês</td>
+        <td><span class="badge badge-gestor">GESTOR</span> <span class="badge badge-admin">ADMIN</span></td>
+    </tr>
+    <tr>
+        <td>Dias médio parado</td>
+        <td>Há quantos dias, em média, as oportunidades abertas estão sem movimentação</td>
+        <td><span class="badge badge-gestor">GESTOR</span> <span class="badge badge-admin">ADMIN</span></td>
+    </tr>
+</table>
+
+<div class="info-box">
+    <strong>Nota:</strong> Os insights são calculados automaticamente a partir dos dados do sistema. Eles aparecem apenas quando há dados suficientes para gerar a informação.
+</div>
+
+<h2>13.5 Objetivo da Etapa</h2>
+
+<p>A Etapa 6 existe para <strong>melhorar a qualidade da informação</strong> no CRM, sem adicionar burocracia. O ciclo é:</p>
+
+<div class="flow">
+Vendedor marca perda com motivo
+    → Gestor vê padrões de perda nos insights
+    → Equipe identifica pontos de melhoria
+    → Ações corretivas são tomadas
+    → Taxas de conversão melhoram
+</div>
+
+<div class="success-box">
+    <strong>Importante:</strong> Os insights são para <strong>aprendizado</strong>, não para punição. O objetivo é entender onde o processo pode melhorar, não apontar culpados. Use os dados para orientar, treinar e desenvolver a equipe.
+</div>
+
+<!-- 14. PERGUNTAS FREQUENTES -->
+<h1>14. Perguntas Frequentes</h1>
 
 <h3>Por que não consigo ver os clientes de outros vendedores?</h3>
 <p>Por segurança, cada vendedor vê apenas seus próprios clientes e oportunidades. Gestores e admins podem ver todos os dados.</p>
@@ -1419,7 +1581,7 @@ Vendedor entra no sistema
 <p>Apenas administradores podem ativar clientes. Além disso, o cliente precisa ter o CNPJ/CPF preenchido.</p>
 
 <h3>Como marco uma oportunidade como perdida?</h3>
-<p>Na tela de detalhes da oportunidade, clique em <strong>Marcar como Perdida</strong>.</p>
+<p>Na tela de detalhes da oportunidade, clique em <strong>Marcar como Perdida</strong>. O sistema pedirá o motivo da perda antes de confirmar.</p>
 
 <h3>Posso editar uma meta depois de criada?</h3>
 <p>Sim, o administrador pode editar metas no Django Admin.</p>
@@ -1451,7 +1613,7 @@ Vendedor entra no sistema
 <hr style="margin: 50px 0; border: none; border-top: 1px solid #ddd;">
 
 <p style="text-align: center; color: #95a5a6;">
-    <strong>Praxis CRM</strong> — Manual do Usuário v3.0<br>
+    <strong>Praxis CRM</strong> — Manual do Usuário v4.0<br>
     Desenvolvido com Django 5.x
 </p>
 
