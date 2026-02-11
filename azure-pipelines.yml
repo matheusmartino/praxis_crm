@@ -39,8 +39,9 @@ stages:
           ls -la /home/praxis/praxis_crm
 
           echo "🔄 Atualizando código..."
-          git -C /home/praxis/praxis_crm fetch --all
-          git -C /home/praxis/praxis_crm reset --hard origin/master
+          git -C /home/praxis/praxis_crm fetch --all --quiet
+          git -C /home/praxis/praxis_crm reset --hard origin/master --quiet
+
 
           echo "⬆️ Atualizando pip..."
           /home/praxis/praxis_crm/venv/bin/pip install --upgrade pip
