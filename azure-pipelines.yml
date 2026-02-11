@@ -42,12 +42,6 @@ stages:
           git -C /home/praxis/praxis_crm fetch --all
           git -C /home/praxis/praxis_crm reset --hard origin/master
 
-          echo "🐍 Verificando ambiente virtual..."
-          if [ ! -d "/home/praxis/praxis_crm/venv" ]; then
-            echo "Criando ambiente virtual..."
-            python3 -m venv /home/praxis/praxis_crm/venv
-          fi
-
           echo "⬆️ Atualizando pip..."
           /home/praxis/praxis_crm/venv/bin/pip install --upgrade pip
 
