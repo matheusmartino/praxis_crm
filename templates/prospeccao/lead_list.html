@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Leads — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Leads</h2>
+    <a href="{% url 'prospeccao:lead_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Novo lead
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Empresa</th>
+                <th>Telefone</th>
+                <th>Origem</th>
+                <th>Status</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lead in leads %}
+            <tr>
+                <td><a href="{% url 'prospeccao:lead_detail' lead.pk %}">{{ lead.nome }}</a></td>
+                <td>{{ lead.empresa|default:"—" }}</td>
+                <td>{{ lead.telefone }}</td>
+                <td>{{ lead.origem }}</td>
+                <td>
+                    {% if lead.status == "NOVO" %}
+                    <span class="badge bg-primary">{{ lead.get_status_display }}</span>
+                    {% elif lead.status == "EM_CONTATO" %}
+                    <span class="badge bg-info">{{ lead.get_status_display }}</span>
+                    {% elif lead.status == "AGUARDANDO" %}
+                    <span class="badge bg-warning text-dark">{{ lead.get_status_display }}</span>
+                    {% elif lead.status == "CONVERTIDO" %}
+                    <span class="badge bg-success">{{ lead.get_status_display }}</span>
+                    {% elif lead.status == "PERDIDO" %}
+                    <span class="badge bg-secondary">{{ lead.get_status_display }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ lead.created_at|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">Nenhum lead cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "apps.crm",
     "apps.sales",
     "apps.gestao",
+    "apps.prospeccao",
 ]
 
 # MIDDLEWARE = [
@@ -63,6 +64,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.prospeccao.context_processors.followups_pendentes",
             ],
         },
     },

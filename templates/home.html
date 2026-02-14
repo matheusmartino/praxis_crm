@@ -17,6 +17,16 @@
 
 <div class="row mt-4">
     <div class="col-md-4">
+        <a href="{% url 'prospeccao:lead_list' %}" class="text-decoration-none">
+            <div class="card text-bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Prospecção</h5>
+                    <p class="card-text">Leads cadastrados: <span class="display-4">{{ total_leads }}</span></p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
         <div class="card text-bg-primary mb-3">
             <div class="card-body">
                 <h5 class="card-title">Oportunidades abertas</h5>

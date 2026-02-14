@@ -8,6 +8,7 @@ from django.utils import timezone
 from apps.accounts.forms import LoginForm
 from apps.core.enums import PerfilUsuario
 from apps.crm.models import Cliente
+from apps.prospeccao.models import Lead
 from apps.sales.models import Oportunidade
 
 
@@ -40,11 +41,14 @@ def home_view(request):
     hoje = timezone.now().date()
     followups_hoje = oportunidades_abertas.filter(data_follow_up=hoje).count()
 
+    total_leads = Lead.objects.count()
+
     context = {
         "clientes_recentes": clientes_recentes,
         "oportunidades_abertas": oportunidades_abertas,
         "total_oportunidades": oportunidades_abertas.count(),
         "followups_hoje": followups_hoje,
+        "total_leads": total_leads,
     }
     return render(request, "home.html", context)
 
