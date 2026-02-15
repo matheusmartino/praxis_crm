@@ -1,3 +1,5 @@
+import logging
+
 from django.utils import timezone
 
 from apps.prospeccao.models import (
@@ -15,6 +17,8 @@ from apps.prospeccao.models import (
 # INTERESSADO  → EM_CONTATO  (lead demonstrou interesse, negociação ativa)
 # SEM_INTERESSE → PERDIDO    (lead não quer prosseguir)
 # FECHOU       → CONVERTIDO  (lead virou cliente, preenche convertido_em)
+logger = logging.getLogger("praxis")
+
 RESULTADO_PARA_STATUS = {
     ResultadoContato.NAO_ATENDEU: StatusLead.EM_CONTATO,
     ResultadoContato.PEDIU_RETORNO: StatusLead.AGUARDANDO,
@@ -44,20 +48,34 @@ def registrar_contato(*, lead, tipo, resultado, observacao="", proximo_contato=N
     # Se fechou, registra data de conversão
     if resultado == ResultadoContato.FECHOU:
         lead.convertido_em = timezone.now()
+        logger.info("Lead convertido: lead_id=%s nome=%s", lead.pk, lead.nome)
 
     lead.save(update_fields=["status", "convertido_em", "updated_at"])
+
+    logger.info(
+        "Contato registrado: lead_id=%s tipo=%s resultado=%s novo_status=%s",
+        lead.pk, tipo, resultado, novo_status,
+    )
 
     # Cria follow-up se data do próximo contato foi informada
     if proximo_contato:
         # Cancela follow-ups pendentes anteriores deste lead
-        FollowUp.objects.filter(
+        cancelados = FollowUp.objects.filter(
             lead=lead, status=StatusFollowUp.PENDENTE
         ).update(status=StatusFollowUp.CANCELADO)
+
+        if cancelados:
+            logger.debug(
+                "Follow-ups cancelados: lead_id=%s qtd=%s", lead.pk, cancelados,
+            )
 
         FollowUp.objects.create(
             lead=lead,
             data=proximo_contato,
             descricao=f"Retorno após: {contato.get_tipo_display()} - {contato.get_resultado_display()}",
+        )
+        logger.info(
+            "Follow-up criado: lead_id=%s data=%s", lead.pk, proximo_contato,
         )
 
     return contato

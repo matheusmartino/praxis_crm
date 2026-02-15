@@ -28,17 +28,6 @@ INSTALLED_APPS = [
     "apps.prospeccao",
 ]
 
-# MIDDLEWARE = [
-#     "django.middleware.security.SecurityMiddleware",
-#     "whitenoise.middleware.WhiteNoiseMiddleware",
-#     "django.contrib.sessions.middleware.SessionMiddleware",
-#     "django.middleware.common.CommonMiddleware",
-#     "django.middleware.csrf.CsrfViewMiddleware",
-#     "django.contrib.auth.middleware.AuthenticationMiddleware",
-#     "django.contrib.messages.middleware.MessageMiddleware",
-#     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-# ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -49,6 +38,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Praxis — injeta perfil no request e valida isolamento de acesso
+    'apps.core.middleware.tenant_isolation.TenantIsolationMiddleware',
+    # Praxis — captura exceções não tratadas com contexto completo
+    'apps.core.middleware.global_exception.GlobalExceptionMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -94,6 +88,136 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# =============================================================================
+# LOGGING — Configuração profissional em arquivo
+# =============================================================================
+
+# Garante que o diretório de logs exista na inicialização
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    # --- Formatters -----------------------------------------------------------
+    "formatters": {
+        # Formato detalhado para arquivos de log
+        "verbose": {
+            "format": (
+                "[{asctime}] {levelname} {name} {module} "
+                "({pathname}:{lineno}) — {message}"
+            ),
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        # Formato compacto para console de desenvolvimento
+        "simple": {
+            "format": "[{asctime}] {levelname} {name} — {message}",
+            "style": "{",
+            "datefmt": "%H:%M:%S",
+        },
+        # ---------------------------------------------------------------
+        # FUTURO: JSON logging estruturado para integração com ELK/Datadog
+        # Ativar quando necessário substituindo o formatter dos handlers.
+        # ---------------------------------------------------------------
+        # "json": {
+        #     "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+        #     "format": "%(asctime)s %(levelname)s %(name)s %(module)s "
+        #               "%(pathname)s %(lineno)d %(message)s",
+        # },
+    },
+
+    # --- Filters --------------------------------------------------------------
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        # ---------------------------------------------------------------
+        # FUTURO: Filter para injetar request_id em cada registro de log.
+        # Ativar junto com RequestIDMiddleware para correlação ponta-a-ponta.
+        # ---------------------------------------------------------------
+        # "request_id": {
+        #     "()": "apps.core.middleware.request_id.RequestIdFilter",
+        # },
+    },
+
+    # --- Handlers -------------------------------------------------------------
+    "handlers": {
+        # Console: apenas em desenvolvimento (DEBUG=True)
+        "console": {
+            "level": "DEBUG",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        # Arquivo de erros: ERROR e CRITICAL com rotação automática
+        "error_file": {
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": str(LOG_DIR / "errors.log"),
+            "maxBytes": 5 * 1024 * 1024,  # 5 MB
+            "backupCount": 5,
+            "formatter": "verbose",
+            "encoding": "utf-8",
+        },
+        # Arquivo de aplicação: INFO e WARNING com rotação automática
+        "app_file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": str(LOG_DIR / "app.log"),
+            "maxBytes": 5 * 1024 * 1024,  # 5 MB
+            "backupCount": 5,
+            "formatter": "verbose",
+            "encoding": "utf-8",
+        },
+        # ---------------------------------------------------------------
+        # FUTURO: Handler para Sentry (quando configurado)
+        # ---------------------------------------------------------------
+        # "sentry": {
+        #     "level": "ERROR",
+        #     "class": "sentry_sdk.integrations.logging.EventHandler",
+        # },
+    },
+
+    # --- Loggers --------------------------------------------------------------
+    "loggers": {
+        # Logger raiz do Django
+        "django": {
+            "handlers": ["console", "app_file", "error_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        # Requisições Django (4xx/5xx)
+        "django.request": {
+            "handlers": ["error_file"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        # Logger do projeto Praxis — usado por todos os apps
+        "praxis": {
+            "handlers": ["console", "app_file", "error_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        # Logger específico para auditoria
+        "praxis.auditoria": {
+            "handlers": ["app_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        # Logger específico para segurança (acessos negados, tentativas)
+        "praxis.seguranca": {
+            "handlers": ["app_file", "error_file"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+}
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"  # Redireciona para dashboard após login

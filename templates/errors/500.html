@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Erro Interno — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1 class="display-1 text-muted">500</h1>
+    <h2>Erro Interno do Servidor</h2>
+    <p class="text-muted mt-3">Ocorreu um erro inesperado. Nossa equipe já foi notificada.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Voltar ao Dashboard</a>
+</div>
+{% endblock %}

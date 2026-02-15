@@ -1,7 +1,11 @@
+import logging
+
 from django.core.exceptions import PermissionDenied, ValidationError
 
 from apps.core.enums import PerfilUsuario, StatusCliente
 from apps.crm.models import Cliente
+
+logger = logging.getLogger("praxis")
 
 
 def criar_cliente(
@@ -41,24 +45,42 @@ def criar_cliente(
         cliente.status = StatusCliente.PROVISORIO
 
     cliente.save()
+    logger.info(
+        "Cliente criado: id=%s nome=%s status=%s user=%s",
+        cliente.pk, cliente.nome, cliente.status, user.username,
+    )
     return cliente
 
 
 def ativar_cliente(*, cliente, user):
     """Ativa um cliente. Apenas admins podem ativar. Exige CNPJ/CPF preenchido."""
     if not hasattr(user, "perfil") or user.perfil.papel != PerfilUsuario.ADMIN:
+        logger.warning(
+            "Tentativa de ativar cliente sem permissão: cliente_id=%s user=%s",
+            cliente.pk, user.username,
+        )
         raise PermissionDenied("Apenas administradores podem ativar clientes.")
     if not cliente.cnpj_cpf:
         raise ValidationError("CNPJ/CPF é obrigatório para ativar um cliente.")
     cliente.status = StatusCliente.ATIVO
     cliente.save(update_fields=["status", "atualizado_em"])
+    logger.info(
+        "Cliente ativado: id=%s nome=%s user=%s", cliente.pk, cliente.nome, user.username,
+    )
     return cliente
 
 
 def inativar_cliente(*, cliente, user):
     """Inativa um cliente. Apenas admins podem inativar."""
     if not hasattr(user, "perfil") or user.perfil.papel != PerfilUsuario.ADMIN:
+        logger.warning(
+            "Tentativa de inativar cliente sem permissão: cliente_id=%s user=%s",
+            cliente.pk, user.username,
+        )
         raise PermissionDenied("Apenas administradores podem inativar clientes.")
     cliente.status = StatusCliente.INATIVO
     cliente.save(update_fields=["status", "atualizado_em"])
+    logger.info(
+        "Cliente inativado: id=%s nome=%s user=%s", cliente.pk, cliente.nome, user.username,
+    )
     return cliente

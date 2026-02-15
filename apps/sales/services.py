@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 from decimal import Decimal
 
@@ -7,6 +8,8 @@ from django.utils import timezone
 
 from apps.core.enums import EtapaOportunidade
 from apps.sales.models import Interacao, MetaComercial, Oportunidade
+
+logger = logging.getLogger("praxis")
 
 ORDEM_ETAPAS = [
     EtapaOportunidade.PROSPECCAO,
@@ -18,7 +21,7 @@ ORDEM_ETAPAS = [
 
 
 def criar_oportunidade(*, titulo, cliente, vendedor, valor_estimado=0, descricao=""):
-    return Oportunidade.objects.create(
+    oportunidade = Oportunidade.objects.create(
         titulo=titulo,
         cliente=cliente,
         vendedor=vendedor,
@@ -26,6 +29,11 @@ def criar_oportunidade(*, titulo, cliente, vendedor, valor_estimado=0, descricao
         descricao=descricao,
         etapa=EtapaOportunidade.PROSPECCAO,
     )
+    logger.info(
+        "Oportunidade criada: id=%s titulo=%s vendedor=%s",
+        oportunidade.pk, titulo, vendedor.username,
+    )
+    return oportunidade
 
 
 def avancar_etapa(*, oportunidade):
@@ -36,9 +44,14 @@ def avancar_etapa(*, oportunidade):
     if oportunidade.etapa == EtapaOportunidade.FECHAMENTO:
         raise ValidationError("Oportunidade já está na etapa final.")
 
+    etapa_anterior = oportunidade.etapa
     idx_atual = ORDEM_ETAPAS.index(oportunidade.etapa)
     oportunidade.etapa = ORDEM_ETAPAS[idx_atual + 1]
     oportunidade.save(update_fields=["etapa", "atualizado_em"])
+    logger.info(
+        "Etapa avançada: oportunidade_id=%s de=%s para=%s",
+        oportunidade.pk, etapa_anterior, oportunidade.etapa,
+    )
     return oportunidade
 
 
@@ -46,18 +59,28 @@ def marcar_perdida(*, oportunidade):
     """Marca uma oportunidade como perdida."""
     if oportunidade.etapa == EtapaOportunidade.FECHAMENTO:
         raise ValidationError("Oportunidade fechada não pode ser marcada como perdida.")
+    etapa_anterior = oportunidade.etapa
     oportunidade.etapa = EtapaOportunidade.PERDIDA
     oportunidade.save(update_fields=["etapa", "atualizado_em"])
+    logger.info(
+        "Oportunidade perdida: id=%s etapa_anterior=%s",
+        oportunidade.pk, etapa_anterior,
+    )
     return oportunidade
 
 
 def registrar_interacao(*, oportunidade, tipo, descricao, user):
-    return Interacao.objects.create(
+    interacao = Interacao.objects.create(
         oportunidade=oportunidade,
         tipo=tipo,
         descricao=descricao,
         criado_por=user,
     )
+    logger.info(
+        "Interação registrada: oportunidade_id=%s tipo=%s user=%s",
+        oportunidade.pk, tipo, user.username,
+    )
+    return interacao
 
 
 # =============================================================================
@@ -278,6 +301,10 @@ def atualizar_follow_up(*, oportunidade, proxima_acao, data_follow_up):
     oportunidade.proxima_acao = proxima_acao or ""
     oportunidade.data_follow_up = data_follow_up
     oportunidade.save(update_fields=["proxima_acao", "data_follow_up", "atualizado_em"])
+    logger.info(
+        "Follow-up atualizado: oportunidade_id=%s data=%s",
+        oportunidade.pk, data_follow_up,
+    )
     return oportunidade
 
 
