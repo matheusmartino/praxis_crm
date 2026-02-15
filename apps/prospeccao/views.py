@@ -5,7 +5,7 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Upd
 
 from apps.core.mixins import VendedorRequiredMixin, VendedorWriteMixin
 from apps.prospeccao.forms import ContatoLeadForm, LeadForm
-from apps.prospeccao.models import FollowUp, Lead, StatusFollowUp
+from apps.prospeccao.models import FollowUp, Lead, StatusFollowUp, StatusLead
 from apps.prospeccao.services import registrar_contato
 
 
@@ -14,6 +14,49 @@ class LeadListView(VendedorRequiredMixin, ListView):
     template_name = "prospeccao/lead_list.html"
     context_object_name = "leads"
     paginate_by = 20
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        nome = self.request.GET.get("nome", "").strip()
+        status = self.request.GET.get("status", "").strip()
+        origem = self.request.GET.get("origem", "").strip()
+        data_inicio = self.request.GET.get("data_inicio", "").strip()
+        data_fim = self.request.GET.get("data_fim", "").strip()
+
+        if nome:
+            qs = qs.filter(nome__icontains=nome)
+        if status:
+            qs = qs.filter(status=status)
+        if origem:
+            qs = qs.filter(origem__icontains=origem)
+        if data_inicio:
+            qs = qs.filter(created_at__date__gte=data_inicio)
+        if data_fim:
+            qs = qs.filter(created_at__date__lte=data_fim)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["status_choices"] = StatusLead.choices
+        context["origens"] = (
+            Lead.objects.values_list("origem", flat=True)
+            .distinct()
+            .order_by("origem")
+        )
+        # Preserva filtros para o template
+        context["filtros"] = {
+            "nome": self.request.GET.get("nome", ""),
+            "status": self.request.GET.get("status", ""),
+            "origem": self.request.GET.get("origem", ""),
+            "data_inicio": self.request.GET.get("data_inicio", ""),
+            "data_fim": self.request.GET.get("data_fim", ""),
+        }
+        # Querystring sem page para links de paginação
+        params = self.request.GET.copy()
+        params.pop("page", None)
+        context["querystring"] = params.urlencode()
+        return context
 
 
 class LeadCreateView(VendedorWriteMixin, CreateView):
