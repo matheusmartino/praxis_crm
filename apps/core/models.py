@@ -2,6 +2,45 @@ from django.conf import settings
 from django.db import models
 
 
+class Empresa(models.Model):
+    """Representa uma empresa (tenant) no sistema multi-tenant."""
+
+    nome = models.CharField(max_length=200, verbose_name="Nome")
+    ativa = models.BooleanField(default=True, verbose_name="Ativa")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
+
+    class Meta:
+        verbose_name = "Empresa"
+        verbose_name_plural = "Empresas"
+        ordering = ["nome"]
+
+    def __str__(self):
+        return self.nome
+
+
+class UsuarioEmpresa(models.Model):
+    """Vincula um usuário a uma empresa (tenant)."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="usuario_empresa",
+    )
+    empresa = models.ForeignKey(
+        Empresa,
+        on_delete=models.CASCADE,
+        related_name="usuarios",
+        verbose_name="Empresa",
+    )
+
+    class Meta:
+        verbose_name = "Vínculo Usuário-Empresa"
+        verbose_name_plural = "Vínculos Usuário-Empresa"
+
+    def __str__(self):
+        return f"{self.user.username} — {self.empresa.nome}"
+
+
 class Auditoria(models.Model):
     """
     Registro de auditoria para ações relevantes no sistema.

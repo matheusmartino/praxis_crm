@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from apps.accounts.forms import LoginForm
 from apps.core.enums import PerfilUsuario
+from apps.core.utils.query_scope import aplicar_escopo_usuario
 from apps.crm.models import Cliente
 from apps.prospeccao.models import Lead
 from apps.sales.models import Oportunidade
@@ -32,16 +33,20 @@ def home_view(request):
     ):
         return redirect("gestao:dashboard")
 
-    clientes_recentes = Cliente.objects.filter(criado_por=user).order_by("-criado_em")[:5]
-    oportunidades_abertas = Oportunidade.objects.filter(vendedor=user).exclude(
-        etapa__in=["FECHAMENTO", "PERDIDA"]
-    )
+    clientes_recentes = aplicar_escopo_usuario(
+        Cliente.objects.all(), user, "criado_por"
+    ).order_by("-criado_em")[:5]
+    oportunidades_abertas = aplicar_escopo_usuario(
+        Oportunidade.objects.all(), user, "vendedor"
+    ).exclude(etapa__in=["FECHAMENTO", "PERDIDA"])
 
     # Lembrete visual: oportunidades com follow-up para hoje e vencidos
     hoje = timezone.now().date()
     followups_hoje = oportunidades_abertas.filter(data_follow_up=hoje).count()
 
-    total_leads = Lead.objects.count()
+    total_leads = aplicar_escopo_usuario(
+        Lead.objects.all(), user, "criado_por"
+    ).count()
 
     context = {
         "clientes_recentes": clientes_recentes,

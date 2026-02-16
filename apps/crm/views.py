@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView
 
 from apps.core.mixins import VendedorRequiredMixin, VendedorWriteMixin
+from apps.core.utils.query_scope import aplicar_escopo_usuario
 from apps.crm.forms import ClienteForm
 from apps.crm.models import Cliente
 from apps.crm.services import criar_cliente
@@ -17,8 +18,7 @@ class ClienteListView(VendedorRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            qs = qs.filter(criado_por=self.request.user)
+        qs = aplicar_escopo_usuario(qs, self.request.user, "criado_por")
 
         nome = self.request.GET.get("nome", "").strip()
         if nome:
@@ -48,7 +48,8 @@ class ClienteCreateView(VendedorWriteMixin, CreateView):
         filtro = Q(nome__icontains=nome)
         if cnpj_cpf:
             filtro = filtro | Q(cnpj_cpf=cnpj_cpf)
-        return Cliente.objects.filter(filtro)
+        qs = aplicar_escopo_usuario(Cliente.objects.all(), self.request.user, "criado_por")
+        return qs.filter(filtro)
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -91,6 +92,4 @@ class ClienteDetailView(VendedorRequiredMixin, DetailView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            qs = qs.filter(criado_por=self.request.user)
-        return qs
+        return aplicar_escopo_usuario(qs, self.request.user, "criado_por")

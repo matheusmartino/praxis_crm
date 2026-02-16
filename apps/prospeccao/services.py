@@ -1,7 +1,5 @@
 import logging
 
-from django.utils import timezone
-
 from apps.prospeccao.models import (
     ContatoLead,
     FollowUp,
@@ -45,12 +43,11 @@ def registrar_contato(*, lead, tipo, resultado, observacao="", proximo_contato=N
     novo_status = RESULTADO_PARA_STATUS[resultado]
     lead.status = novo_status
 
-    # Se fechou, registra data de conversão
+    # Se fechou, delega conversão ao método do model (cria Cliente)
     if resultado == ResultadoContato.FECHOU:
-        lead.convertido_em = timezone.now()
-        logger.info("Lead convertido: lead_id=%s nome=%s", lead.pk, lead.nome)
-
-    lead.save(update_fields=["status", "convertido_em", "updated_at"])
+        lead.converter()
+    else:
+        lead.save(update_fields=["status", "updated_at"])
 
     logger.info(
         "Contato registrado: lead_id=%s tipo=%s resultado=%s novo_status=%s",

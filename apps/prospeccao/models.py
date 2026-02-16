@@ -1,5 +1,9 @@
+import logging
+
 from django.db import models
 from django.utils import timezone
+
+logger = logging.getLogger("praxis")
 
 
 class StatusLead(models.TextChoices):
@@ -53,6 +57,14 @@ class Lead(models.Model):
         default=StatusLead.NOVO,
         verbose_name="Status",
     )
+    criado_por = models.ForeignKey(
+        "auth.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="leads_criados",
+        verbose_name="Criado por",
+    )
     observacoes = models.TextField(blank=True, default="", verbose_name="Observações")
     convertido_em = models.DateTimeField(
         null=True, blank=True, verbose_name="Convertido em"
@@ -67,6 +79,49 @@ class Lead(models.Model):
 
     def __str__(self):
         return self.nome
+
+    def converter(self):
+        """Converte o lead em Cliente (idempotente).
+
+        Regras:
+            - Se já está CONVERTIDO, retorna None (não duplica).
+            - Requer criado_por preenchido (para vincular empresa e criado_por ao Cliente).
+            - Atualiza status para CONVERTIDO e preenche convertido_em.
+            - Cria Cliente com status PROVISORIO na empresa do vendedor.
+        """
+        if self.convertido_em:
+            return None
+
+        if not self.criado_por:
+            logger.warning(
+                "Lead sem criado_por, conversao ignorada: lead_id=%s", self.pk,
+            )
+            return None
+
+        from apps.crm.models import Cliente
+
+        self.status = StatusLead.CONVERTIDO
+        self.convertido_em = timezone.now()
+        self.save(update_fields=["status", "convertido_em", "updated_at"])
+
+        ue = getattr(self.criado_por, "usuario_empresa", None)
+        empresa_nome = ue.empresa.nome if ue else ""
+
+        cliente = Cliente.objects.create(
+            nome=self.nome,
+            telefone=self.telefone or "",
+            email=self.email or "",
+            criado_por=self.criado_por,
+            nome_contato_principal=self.nome,
+            telefone_contato=self.telefone or "",
+            email_contato=self.email or "",
+        )
+
+        logger.info(
+            "Lead convertido em Cliente: lead_id=%s cliente_id=%s empresa=%s",
+            self.pk, cliente.pk, empresa_nome,
+        )
+        return cliente
 
 
 class ContatoLead(models.Model):

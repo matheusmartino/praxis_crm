@@ -1,9 +1,13 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, FormView, ListView, UpdateView
+from django.views.generic import (
+    CreateView, DetailView, FormView, ListView, TemplateView, UpdateView,
+)
 
-from apps.core.mixins import VendedorRequiredMixin, VendedorWriteMixin
+from apps.core.mixins import GestorRequiredMixin, VendedorRequiredMixin, VendedorWriteMixin
+from apps.core.utils.query_scope import aplicar_escopo_usuario
+from apps.prospeccao.dashboard_service import obter_metricas_prospeccao
 from apps.prospeccao.forms import ContatoLeadForm, LeadForm
 from apps.prospeccao.models import FollowUp, Lead, StatusFollowUp, StatusLead
 from apps.prospeccao.services import registrar_contato
@@ -17,6 +21,8 @@ class LeadListView(VendedorRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = aplicar_escopo_usuario(qs, self.request.user, "criado_por")
+
         nome = self.request.GET.get("nome", "").strip()
         status = self.request.GET.get("status", "").strip()
         origem = self.request.GET.get("origem", "").strip()
@@ -34,13 +40,14 @@ class LeadListView(VendedorRequiredMixin, ListView):
         if data_fim:
             qs = qs.filter(created_at__date__lte=data_fim)
 
-        return qs
+        return qs.exclude(status=StatusLead.CONVERTIDO)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["status_choices"] = StatusLead.choices
         context["origens"] = (
-            Lead.objects.values_list("origem", flat=True)
+            aplicar_escopo_usuario(Lead.objects.all(), self.request.user, "criado_por")
+            .values_list("origem", flat=True)
             .distinct()
             .order_by("origem")
         )
@@ -66,6 +73,10 @@ class LeadCreateView(VendedorWriteMixin, CreateView):
     success_url = reverse_lazy("prospeccao:lead_list")
     redirect_url_name = "prospeccao:lead_list"
 
+    def form_valid(self, form):
+        form.instance.criado_por = self.request.user
+        return super().form_valid(form)
+
 
 class LeadUpdateView(VendedorWriteMixin, UpdateView):
     model = Lead
@@ -74,11 +85,28 @@ class LeadUpdateView(VendedorWriteMixin, UpdateView):
     success_url = reverse_lazy("prospeccao:lead_list")
     redirect_url_name = "prospeccao:lead_list"
 
+    def get_queryset(self):
+        print("get_queryset chamado para LeadUpdateView")
+        qs = super().get_queryset()
+        return aplicar_escopo_usuario(qs, self.request.user, "criado_por")
+
+    def form_valid(self, form):
+        print("form_valid chamado para LeadUpdateView")        
+        status_anterior = Lead.objects.get(pk=self.object.pk).status
+        response = super().form_valid(form)
+        if status_anterior != StatusLead.CONVERTIDO and self.object.status == StatusLead.CONVERTIDO:
+            self.object.converter()
+        return response
+
 
 class LeadDetailView(VendedorRequiredMixin, DetailView):
     model = Lead
     template_name = "prospeccao/lead_detail.html"
     context_object_name = "lead"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return aplicar_escopo_usuario(qs, self.request.user, "criado_por")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -97,7 +125,8 @@ class ContatoLeadCreateView(VendedorWriteMixin, FormView):
     redirect_url_name = "prospeccao:lead_list"
 
     def dispatch(self, request, *args, **kwargs):
-        self.lead = get_object_or_404(Lead, pk=self.kwargs["pk"])
+        qs = aplicar_escopo_usuario(Lead.objects.all(), request.user, "criado_por")
+        self.lead = get_object_or_404(qs, pk=self.kwargs["pk"])
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -126,12 +155,21 @@ class FollowUpHojeView(VendedorRequiredMixin, ListView):
 
     def get_queryset(self):
         hoje = timezone.now().date()
-        return (
-            FollowUp.objects.filter(status=StatusFollowUp.PENDENTE, data__lte=hoje)
-            .select_related("lead")
-        )
+        qs = FollowUp.objects.filter(
+            status=StatusFollowUp.PENDENTE, data__lte=hoje
+        ).select_related("lead")
+        return aplicar_escopo_usuario(qs, self.request.user, "lead__criado_por")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["hoje"] = timezone.now().date()
+        return context
+
+
+class DashboardProspeccaoView(GestorRequiredMixin, TemplateView):
+    template_name = "prospeccao/dashboard_prospeccao.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(obter_metricas_prospeccao(user=self.request.user))
         return context

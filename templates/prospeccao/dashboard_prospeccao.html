@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Prospecção - Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-bar-chart"></i> Dashboard Prospecção</h2>
+</div>
+
+<!-- Cards de métricas -->
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Taxa de Conversão</h6>
+                        <h2 class="mt-2 mb-0">{{ taxa_conversao }}%</h2>
+                    </div>
+                    <i class="bi bi-percent fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Total de Leads</h6>
+                        <h2 class="mt-2 mb-0">{{ total_leads }}</h2>
+                    </div>
+                    <i class="bi bi-person-plus fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Leads Convertidos</h6>
+                        <h2 class="mt-2 mb-0">{{ leads_convertidos }}</h2>
+                    </div>
+                    <i class="bi bi-check-circle fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Leads Perdidos</h6>
+                        <h2 class="mt-2 mb-0">{{ leads_perdidos }}</h2>
+                    </div>
+                    <i class="bi bi-x-circle fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leads por Origem -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Leads por Origem</h5>
+            </div>
+            <div class="card-body">
+                {% if leads_por_origem %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Origem</th>
+                            <th>Total</th>
+                            <th>Convertidos</th>
+                            <th>Perdidos</th>
+                            <th>Taxa (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in leads_por_origem %}
+                        <tr>
+                            <td>{{ item.origem }}</td>
+                            <td>{{ item.total }}</td>
+                            <td><span class="text-success">{{ item.convertidos }}</span></td>
+                            <td><span class="text-danger">{{ item.perdidos }}</span></td>
+                            <td>
+                                {% if item.convertidos or item.perdidos %}
+                                    {% widthratio item.convertidos item.convertidos|add:item.perdidos 100 %}%
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mb-0">Nenhum lead cadastrado.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Conversão por Vendedor -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Conversão por Vendedor</h5>
+            </div>
+            <div class="card-body">
+                {% if conversao_por_vendedor %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Vendedor</th>
+                            <th>Total</th>
+                            <th>Convertidos</th>
+                            <th>Perdidos</th>
+                            <th>Taxa (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in conversao_por_vendedor %}
+                        <tr>
+                            <td>{{ item.vendedor }}</td>
+                            <td>{{ item.total }}</td>
+                            <td><span class="text-success">{{ item.convertidos }}</span></td>
+                            <td><span class="text-danger">{{ item.perdidos }}</span></td>
+                            <td>{{ item.taxa }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mb-0">Nenhum lead com vendedor atribuído.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Follow-ups Atrasados -->
+<div class="row mt-4 mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Follow-ups Atrasados
+                    {% if total_followups_atrasados %}
+                    <span class="badge bg-danger ms-2">{{ total_followups_atrasados }}</span>
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if followups_atrasados %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Lead</th>
+                            <th>Data Prevista</th>
+                            <th>Descrição</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fu in followups_atrasados %}
+                        <tr>
+                            <td>{{ fu.lead.nome }}</td>
+                            <td><span class="text-danger">{{ fu.data|date:"d/m/Y" }}</span></td>
+                            <td>{{ fu.descricao|default:"-" }}</td>
+                            <td>
+                                <a href="{% url 'prospeccao:lead_detail' fu.lead.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-success mb-0"><i class="bi bi-check-circle"></i> Nenhum follow-up atrasado.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

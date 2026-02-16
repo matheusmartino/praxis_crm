@@ -7,6 +7,7 @@ from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from apps.core.mixins import GestorRequiredMixin, VendedorRequiredMixin, VendedorWriteMixin
+from apps.core.utils.query_scope import aplicar_escopo_usuario
 from apps.crm.models import Cliente
 from apps.sales.models import Interacao, MetaComercial, Oportunidade
 from apps.sales.forms import FollowUpForm, InteracaoForm, MotivoPerdaForm, OportunidadeForm
@@ -32,8 +33,7 @@ class OportunidadeListView(VendedorRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            qs = qs.filter(vendedor=self.request.user)
+        qs = aplicar_escopo_usuario(qs, self.request.user, "vendedor")
 
         cliente_id = self.request.GET.get("cliente")
         data_inicial = self.request.GET.get("data_inicial")
@@ -51,10 +51,9 @@ class OportunidadeListView(VendedorRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
 
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            ctx["clientes"] = Cliente.objects.filter(criado_por=self.request.user)
-        else:
-            ctx["clientes"] = Cliente.objects.all()
+        ctx["clientes"] = aplicar_escopo_usuario(
+            Cliente.objects.all(), self.request.user, "criado_por"
+        )
 
         ctx["filtro_cliente"] = self.request.GET.get("cliente", "")
         ctx["filtro_data_inicial"] = self.request.GET.get("data_inicial", "")
@@ -76,10 +75,9 @@ class OportunidadeCreateView(VendedorWriteMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            form.fields["cliente"].queryset = form.fields["cliente"].queryset.filter(
-                criado_por=self.request.user
-            )
+        form.fields["cliente"].queryset = aplicar_escopo_usuario(
+            form.fields["cliente"].queryset, self.request.user, "criado_por"
+        )
         return form
 
     def form_valid(self, form):
@@ -100,9 +98,7 @@ class OportunidadeDetailView(VendedorRequiredMixin, DetailView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            qs = qs.filter(vendedor=self.request.user)
-        return qs
+        return aplicar_escopo_usuario(qs, self.request.user, "vendedor")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -114,7 +110,8 @@ class OportunidadeAvancarView(VendedorWriteMixin, View):
     redirect_url_name = "sales:oportunidade_list"  # Redirecionamento para GESTOR
 
     def post(self, request, pk):
-        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        qs = aplicar_escopo_usuario(Oportunidade.objects.all(), request.user, "vendedor")
+        oportunidade = get_object_or_404(qs, pk=pk)
         if hasattr(request.user, "perfil") and request.user.perfil.is_vendedor:
             if oportunidade.vendedor != request.user:
                 from django.core.exceptions import PermissionDenied
@@ -143,13 +140,15 @@ class OportunidadePerdidaView(VendedorWriteMixin, View):
         })
 
     def get(self, request, pk):
-        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        qs = aplicar_escopo_usuario(Oportunidade.objects.all(), request.user, "vendedor")
+        oportunidade = get_object_or_404(qs, pk=pk)
         self._check_owner(request, oportunidade)
         form = MotivoPerdaForm()
         return self._render(request, oportunidade, form)
 
     def post(self, request, pk):
-        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        qs = aplicar_escopo_usuario(Oportunidade.objects.all(), request.user, "vendedor")
+        oportunidade = get_object_or_404(qs, pk=pk)
         self._check_owner(request, oportunidade)
         form = MotivoPerdaForm(request.POST)
         if form.is_valid():
@@ -173,8 +172,7 @@ class InteracaoListView(VendedorRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            qs = qs.filter(criado_por=self.request.user)
+        qs = aplicar_escopo_usuario(qs, self.request.user, "criado_por")
 
         cliente_id = self.request.GET.get("cliente")
         data_inicial = self.request.GET.get("data_inicial")
@@ -192,10 +190,9 @@ class InteracaoListView(VendedorRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
 
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            ctx["clientes"] = Cliente.objects.filter(criado_por=self.request.user)
-        else:
-            ctx["clientes"] = Cliente.objects.all()
+        ctx["clientes"] = aplicar_escopo_usuario(
+            Cliente.objects.all(), self.request.user, "criado_por"
+        )
 
         ctx["filtro_cliente"] = self.request.GET.get("cliente", "")
         ctx["filtro_data_inicial"] = self.request.GET.get("data_inicial", "")
@@ -216,10 +213,9 @@ class InteracaoCreateView(VendedorWriteMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        if hasattr(self.request.user, "perfil") and self.request.user.perfil.is_vendedor:
-            form.fields["oportunidade"].queryset = Oportunidade.objects.filter(
-                vendedor=self.request.user
-            )
+        form.fields["oportunidade"].queryset = aplicar_escopo_usuario(
+            Oportunidade.objects.all(), self.request.user, "vendedor"
+        )
         return form
 
     def form_valid(self, form):
@@ -290,7 +286,9 @@ class MetasPorVendedorView(GestorRequiredMixin, TemplateView):
         if ano:
             ano = int(ano)
 
-        metas, mes_atual, ano_atual = listar_metas_vendedores(mes=mes, ano=ano)
+        metas, mes_atual, ano_atual = listar_metas_vendedores(
+            mes=mes, ano=ano, user=self.request.user
+        )
 
         context["metas"] = metas
         context["mes"] = mes_atual
@@ -347,7 +345,9 @@ class OportunidadesSemFollowUpView(GestorRequiredMixin, TemplateView):
         except ValueError:
             dias = 7
 
-        oportunidades = listar_oportunidades_sem_follow_up(dias_parada=dias)
+        oportunidades = listar_oportunidades_sem_follow_up(
+            dias_parada=dias, user=self.request.user
+        )
 
         context["oportunidades"] = oportunidades
         context["total"] = len(oportunidades)
@@ -362,7 +362,8 @@ class FollowUpEditView(VendedorWriteMixin, View):
     redirect_url_name = "sales:oportunidade_list"
 
     def get(self, request, pk):
-        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        qs = aplicar_escopo_usuario(Oportunidade.objects.all(), request.user, "vendedor")
+        oportunidade = get_object_or_404(qs, pk=pk)
 
         # Verifica se é o dono da oportunidade (para VENDEDOR)
         if hasattr(request.user, "perfil") and request.user.perfil.is_vendedor:
@@ -374,7 +375,8 @@ class FollowUpEditView(VendedorWriteMixin, View):
         return self._render(request, oportunidade, form)
 
     def post(self, request, pk):
-        oportunidade = get_object_or_404(Oportunidade, pk=pk)
+        qs = aplicar_escopo_usuario(Oportunidade.objects.all(), request.user, "vendedor")
+        oportunidade = get_object_or_404(qs, pk=pk)
 
         # Verifica se é o dono da oportunidade (para VENDEDOR)
         if hasattr(request.user, "perfil") and request.user.perfil.is_vendedor:

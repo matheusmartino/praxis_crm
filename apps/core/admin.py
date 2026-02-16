@@ -1,7 +1,22 @@
 from django.contrib import admin
 
 from apps.core.admin_mixins import GestorReadOnlyAdminMixin
-from apps.core.models import Auditoria
+from apps.core.models import Auditoria, Empresa, UsuarioEmpresa
+
+
+@admin.register(Empresa)
+class EmpresaAdmin(admin.ModelAdmin):
+    list_display = ("nome", "ativa", "created_at")
+    list_filter = ("ativa",)
+    search_fields = ("nome",)
+
+
+@admin.register(UsuarioEmpresa)
+class UsuarioEmpresaAdmin(admin.ModelAdmin):
+    list_display = ("user", "empresa")
+    list_filter = ("empresa",)
+    search_fields = ("user__username", "user__first_name", "empresa__nome")
+    raw_id_fields = ("user",)
 
 
 @admin.register(Auditoria)

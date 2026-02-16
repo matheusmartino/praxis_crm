@@ -16,6 +16,15 @@ class Perfil(models.Model):
         default=PerfilUsuario.VENDEDOR,
         verbose_name="Papel",
     )
+    gestor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="vendedores",
+        limit_choices_to={"perfil__papel": "GESTOR"},
+        verbose_name="Gestor",
+    )
 
     class Meta:
         verbose_name = "Perfil"

@@ -1,17 +1,16 @@
 from datetime import timedelta
 
-from django.contrib.auth import get_user_model
-from django.db.models import Count, Sum
+from django.db.models import Sum
 from django.utils import timezone
 from django.views.generic import TemplateView
 
 from apps.core.enums import EtapaOportunidade, StatusCliente
 from apps.core.mixins import GestorRequiredMixin
+from apps.core.utils.query_scope import aplicar_escopo_usuario, obter_usuarios_visiveis
 from apps.crm.models import Cliente
+from apps.prospeccao.models import Lead
 from apps.sales.models import Oportunidade
 from apps.sales.services import calcular_insights_gestao, calcular_tempo_medio_etapas
-
-User = get_user_model()
 
 # Número de dias para considerar uma oportunidade como "parada"
 DIAS_OPORTUNIDADE_PARADA = 7
@@ -24,20 +23,25 @@ class DashboardGestorView(GestorRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
 
         # Total de leads (clientes PROVISORIOS)
-        context["total_leads"] = Cliente.objects.filter(
-            status=StatusCliente.PROVISORIO
+        context["total_leads"] = aplicar_escopo_usuario(
+            Cliente.objects.filter(status=StatusCliente.PROVISORIO), user, "criado_por"
         ).count()
 
         # Total de clientes ativos
-        context["total_clientes_ativos"] = Cliente.objects.filter(
-            status=StatusCliente.ATIVO
+        context["total_clientes_ativos"] = aplicar_escopo_usuario(
+            Cliente.objects.filter(status=StatusCliente.ATIVO), user, "criado_por"
         ).count()
 
         # Total de oportunidades (excluindo PERDIDA e FECHAMENTO)
-        oportunidades_abertas = Oportunidade.objects.exclude(
-            etapa__in=[EtapaOportunidade.PERDIDA, EtapaOportunidade.FECHAMENTO]
+        oportunidades_abertas = aplicar_escopo_usuario(
+            Oportunidade.objects.exclude(
+                etapa__in=[EtapaOportunidade.PERDIDA, EtapaOportunidade.FECHAMENTO]
+            ),
+            user,
+            "vendedor",
         )
         context["total_oportunidades"] = oportunidades_abertas.count()
 
@@ -47,25 +51,22 @@ class DashboardGestorView(GestorRequiredMixin, TemplateView):
         )
 
         # Oportunidades fechadas (ganhas)
-        context["total_fechadas"] = Oportunidade.objects.filter(
-            etapa=EtapaOportunidade.FECHAMENTO
-        ).count()
+        oportunidades_fechadas = aplicar_escopo_usuario(
+            Oportunidade.objects.filter(etapa=EtapaOportunidade.FECHAMENTO),
+            user,
+            "vendedor",
+        )
+        context["total_fechadas"] = oportunidades_fechadas.count()
 
         # Valor total fechado
         context["valor_fechado"] = (
-            Oportunidade.objects.filter(etapa=EtapaOportunidade.FECHAMENTO).aggregate(
-                total=Sum("valor_estimado")
-            )["total"]
-            or 0
+            oportunidades_fechadas.aggregate(total=Sum("valor_estimado"))["total"] or 0
         )
 
         # Alerta visual: oportunidades sem follow-up ou paradas
         data_limite = timezone.now() - timedelta(days=DIAS_OPORTUNIDADE_PARADA)
 
-        # Oportunidades sem data_follow_up
         sem_followup = oportunidades_abertas.filter(data_follow_up__isnull=True).count()
-
-        # Oportunidades paradas há mais de X dias
         paradas = oportunidades_abertas.filter(atualizado_em__lt=data_limite).count()
 
         context["oportunidades_sem_followup"] = sem_followup
@@ -73,9 +74,9 @@ class DashboardGestorView(GestorRequiredMixin, TemplateView):
         context["dias_oportunidade_parada"] = DIAS_OPORTUNIDADE_PARADA
         context["total_alerta_disciplina"] = sem_followup + paradas
 
-        # Insights e tempo médio por etapa (Etapa 6)
-        context["tempo_medio_etapas"] = calcular_tempo_medio_etapas()
-        context["insights"] = calcular_insights_gestao()
+        # Insights e tempo médio por etapa
+        context["tempo_medio_etapas"] = calcular_tempo_medio_etapas(user=user)
+        context["insights"] = calcular_insights_gestao(user=user)
 
         return context
 
@@ -87,29 +88,22 @@ class LeadsPorVendedorView(GestorRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
 
-        # Dados agregados por vendedor
         vendedores_data = []
-
-        vendedores = User.objects.filter(
-            clientes_criados__isnull=False
-        ).distinct()
+        vendedores = obter_usuarios_visiveis(user)
 
         for vendedor in vendedores:
-            # Leads criados (clientes PROVISORIOS)
-            leads_criados = Cliente.objects.filter(
-                criado_por=vendedor, status=StatusCliente.PROVISORIO
+            leads_criados = Lead.objects.filter(
+                criado_por=vendedor
             ).count()
 
-            # Total de clientes criados pelo vendedor
             total_clientes = Cliente.objects.filter(criado_por=vendedor).count()
 
-            # Oportunidades criadas pelo vendedor
             oportunidades_criadas = Oportunidade.objects.filter(
                 vendedor=vendedor
             ).count()
 
-            # Oportunidades criadas a partir de leads desse vendedor
             clientes_ids = Cliente.objects.filter(criado_por=vendedor).values_list(
                 "id", flat=True
             )
@@ -117,7 +111,6 @@ class LeadsPorVendedorView(GestorRequiredMixin, TemplateView):
                 cliente_id__in=clientes_ids
             ).count()
 
-            # Percentual de conversao
             if total_clientes > 0:
                 conversao = round((oportunidades_leads / total_clientes) * 100, 1)
             else:
@@ -134,7 +127,6 @@ class LeadsPorVendedorView(GestorRequiredMixin, TemplateView):
                 }
             )
 
-        # Ordenar por leads criados (decrescente)
         vendedores_data.sort(key=lambda x: x["leads_criados"], reverse=True)
         context["vendedores"] = vendedores_data
 
@@ -148,11 +140,14 @@ class PipelineGeralView(GestorRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
 
         # Pipeline por etapa
         etapas_data = []
         for etapa_code, etapa_label in EtapaOportunidade.choices:
-            oportunidades = Oportunidade.objects.filter(etapa=etapa_code)
+            oportunidades = aplicar_escopo_usuario(
+                Oportunidade.objects.filter(etapa=etapa_code), user, "vendedor"
+            )
             quantidade = oportunidades.count()
             valor_total = oportunidades.aggregate(total=Sum("valor_estimado"))[
                 "total"
@@ -171,7 +166,9 @@ class PipelineGeralView(GestorRequiredMixin, TemplateView):
 
         # Pipeline por vendedor
         vendedores_pipeline = []
-        vendedores = User.objects.filter(oportunidades__isnull=False).distinct()
+        vendedores = obter_usuarios_visiveis(user).filter(
+            oportunidades__isnull=False
+        ).distinct()
 
         for vendedor in vendedores:
             oportunidades_abertas = Oportunidade.objects.filter(
@@ -183,7 +180,6 @@ class PipelineGeralView(GestorRequiredMixin, TemplateView):
                 "total"
             ] or 0
 
-            # Detalhamento por etapa
             etapas_vendedor = []
             for etapa_code, etapa_label in EtapaOportunidade.choices:
                 if etapa_code in [EtapaOportunidade.PERDIDA, EtapaOportunidade.FECHAMENTO]:
@@ -211,7 +207,6 @@ class PipelineGeralView(GestorRequiredMixin, TemplateView):
                 }
             )
 
-        # Ordenar por valor total (decrescente)
         vendedores_pipeline.sort(key=lambda x: x["valor_total"], reverse=True)
         context["vendedores_pipeline"] = vendedores_pipeline
 
