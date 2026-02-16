@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lead.nome }} — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ lead.nome }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'prospeccao:contato_create' lead.pk %}" class="btn btn-primary">
+            <i class="bi bi-telephone-plus"></i> Registrar Contato
+        </a>
+        <a href="{% url 'prospeccao:lead_update' lead.pk %}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'prospeccao:lead_list' %}" class="btn btn-outline-secondary">Voltar</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Empresa</dt>
+            <dd class="col-sm-9">{{ lead.empresa|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Telefone</dt>
+            <dd class="col-sm-9">{{ lead.telefone }}</dd>
+
+            <dt class="col-sm-3">WhatsApp</dt>
+            <dd class="col-sm-9">{{ lead.whatsapp|default:"—" }}</dd>
+
+            <dt class="col-sm-3">E-mail</dt>
+            <dd class="col-sm-9">{{ lead.email|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Origem</dt>
+            <dd class="col-sm-9">{{ lead.origem }}</dd>
+
+            <dt class="col-sm-3">Produto de interesse</dt>
+            <dd class="col-sm-9">{{ lead.produto_interesse|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">
+                {% if lead.status == "NOVO" %}
+                <span class="badge bg-primary">{{ lead.get_status_display }}</span>
+                {% elif lead.status == "EM_CONTATO" %}
+                <span class="badge bg-info">{{ lead.get_status_display }}</span>
+                {% elif lead.status == "AGUARDANDO" %}
+                <span class="badge bg-warning text-dark">{{ lead.get_status_display }}</span>
+                {% elif lead.status == "CONVERTIDO" %}
+                <span class="badge bg-success">{{ lead.get_status_display }}</span>
+                {% elif lead.status == "PERDIDO" %}
+                <span class="badge bg-secondary">{{ lead.get_status_display }}</span>
+                {% endif %}
+            </dd>
+
+            <dt class="col-sm-3">Observações</dt>
+            <dd class="col-sm-9">{{ lead.observacoes|default:"—"|linebreaksbr }}</dd>
+
+            <dt class="col-sm-3">Convertido em</dt>
+            <dd class="col-sm-9">{{ lead.convertido_em|date:"d/m/Y H:i"|default:"—" }}</dd>
+
+            <dt class="col-sm-3">Criado em</dt>
+            <dd class="col-sm-9">{{ lead.created_at|date:"d/m/Y H:i" }}</dd>
+
+            <dt class="col-sm-3">Atualizado em</dt>
+            <dd class="col-sm-9">{{ lead.updated_at|date:"d/m/Y H:i" }}</dd>
+        </dl>
+    </div>
+</div>
+
+{% if followups %}
+<h4 class="mt-4">Follow-ups Pendentes</h4>
+<ul class="list-group mb-4">
+    {% for followup in followups %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-calendar-event"></i>
+            <strong>{{ followup.data|date:"d/m/Y" }}</strong>
+            {% if followup.descricao %}
+            <span class="mx-1">—</span> {{ followup.descricao }}
+            {% endif %}
+        </div>
+        <span class="badge bg-warning text-dark">{{ followup.get_status_display }}</span>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<h4 class="mt-4">Histórico de Contatos</h4>
+<ul class="list-group">
+    {% for contato in contatos %}
+    <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ contato.get_tipo_display }}</strong>
+                <span class="mx-1">—</span>
+                {% if contato.resultado == "FECHOU" %}
+                <span class="badge bg-success">{{ contato.get_resultado_display }}</span>
+                {% elif contato.resultado == "INTERESSADO" %}
+                <span class="badge bg-info">{{ contato.get_resultado_display }}</span>
+                {% elif contato.resultado == "PEDIU_RETORNO" %}
+                <span class="badge bg-warning text-dark">{{ contato.get_resultado_display }}</span>
+                {% elif contato.resultado == "NAO_ATENDEU" %}
+                <span class="badge bg-secondary">{{ contato.get_resultado_display }}</span>
+                {% elif contato.resultado == "SEM_INTERESSE" %}
+                <span class="badge bg-danger">{{ contato.get_resultado_display }}</span>
+                {% endif %}
+            </div>
+            <small class="text-muted">{{ contato.data_contato|date:"d/m/Y H:i" }}</small>
+        </div>
+        {% if contato.observacao %}
+        <p class="mb-0 mt-2 text-muted">{{ contato.observacao|linebreaksbr }}</p>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li class="list-group-item text-muted">Nenhum contato registrado.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

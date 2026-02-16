@@ -20,33 +20,38 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crm:cliente_list' %}">
-                            <i class="bi bi-people"></i> Clientes
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-megaphone"></i> Prospecção
+                            {% if total_followups_pendentes %}
+                            <span class="badge bg-danger">{{ total_followups_pendentes }}</span>
+                            {% endif %}
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'prospeccao:lead_list' %}">Leads</a></li>
+                            <li><a class="dropdown-item" href="{% url 'prospeccao:followup_hoje' %}">
+                                Follow-ups Hoje
+                                {% if total_followups_pendentes %}
+                                <span class="badge bg-danger">{{ total_followups_pendentes }}</span>
+                                {% endif %}
+                            </a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sales:oportunidade_list' %}">
-                            <i class="bi bi-funnel"></i> Oportunidades
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-briefcase"></i> CRM
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'crm:cliente_list' %}"><i class="bi bi-people me-1"></i> Clientes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sales:oportunidade_list' %}"><i class="bi bi-funnel me-1"></i> Oportunidades</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sales:interacao_list' %}"><i class="bi bi-chat-dots me-1"></i> Interações</a></li>
+                            {% if user.perfil.is_vendedor %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'sales:minha_meta' %}"><i class="bi bi-bullseye me-1"></i> Minha Meta</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sales:minhas_pendencias' %}"><i class="bi bi-bell me-1"></i> Pendências</a></li>
+                            {% endif %}
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sales:interacao_list' %}">
-                            <i class="bi bi-chat-dots"></i> Interações
-                        </a>
-                    </li>
-                    {% if user.perfil.is_vendedor %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sales:minha_meta' %}">
-                            <i class="bi bi-bullseye"></i> Minha Meta
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sales:minhas_pendencias' %}">
-                            <i class="bi bi-bell"></i> Pendências
-                        </a>
-                    </li>
-                    {% endif %}
                     {% if user.perfil.is_gestor or user.perfil.is_admin %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">

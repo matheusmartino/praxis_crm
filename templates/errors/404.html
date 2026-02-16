@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Página não encontrada — Praxis CRM{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1 class="display-1 text-muted">404</h1>
+    <h2>Página não encontrada</h2>
+    <p class="text-muted mt-3">O endereço que você procura não existe ou foi movido.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Voltar ao Dashboard</a>
+</div>
+{% endblock %}
