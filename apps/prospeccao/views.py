@@ -23,8 +23,7 @@ class LeadListView(VendedorRequiredMixin, ListView):
     paginate_by = 20
     
 
-    def get_queryset(self):
-        print("🔥 ENTROU NO GET_QUERYSET 🔥")
+    def get_queryset(self):        
         qs = super().get_queryset()
         qs = aplicar_escopo_usuario(qs, self.request.user, "criado_por")
 
@@ -210,6 +209,9 @@ class LeadDeleteView(GestorRequiredMixin, DeleteView):
 
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         # Sem página de confirmação separada — exclusão via POST direto.
-        return redirect("prospeccao:lead_detail", pk=self.kwargs["pk"])
+            self.object = self.get_object()  # <- ESSENCIAL
+            self.object.delete()
+            messages.success(request, "Lead excluído com sucesso.")
+            return redirect(self.success_url)

@@ -63,6 +63,7 @@
                 <th>Origem</th>
                 <th>Status</th>
                 <th>Criado em</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -86,6 +87,17 @@
                     {% endif %}
                 </td>
                 <td>{{ lead.created_at|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {% if request.user.perfil.papel == "GESTOR" %}
+                        {% if lead.status != StatusLead.CONVERTIDO and not lead.contatos.exists %}
+                            <a href="{% url 'prospeccao:lead_delete' lead.pk %}" 
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Tem certeza que deseja excluir este lead?');">
+                            🗑
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
             <tr>
