@@ -14,6 +14,17 @@ class StatusLead(models.TextChoices):
     PERDIDO = "PERDIDO", "Perdido"
 
 
+class OrigemLead(models.TextChoices):
+    GOOGLE = "GOOGLE", "Google"
+    INSTAGRAM = "INSTAGRAM", "Instagram"
+    FACEBOOK = "FACEBOOK", "Facebook"
+    INDICACAO = "INDICACAO", "Indicação"
+    WHATSAPP = "WHATSAPP", "WhatsApp"
+    SITE = "SITE", "Site"
+    LOJA_FISICA = "LOJA_FISICA", "Loja física"
+    OUTRO = "OUTRO", "Outro"
+
+
 class TipoContato(models.TextChoices):
     LIGACAO = "LIGACAO", "Ligação"
     WHATSAPP = "WHATSAPP", "WhatsApp"
@@ -47,7 +58,11 @@ class Lead(models.Model):
         max_length=20, blank=True, default="", verbose_name="WhatsApp"
     )
     email = models.EmailField(blank=True, default="", verbose_name="E-mail")
-    origem = models.CharField(max_length=100, verbose_name="Origem")
+    origem = models.CharField(
+        max_length=100,
+        choices=OrigemLead.choices,
+        verbose_name="Origem",
+    )
     produto_interesse = models.CharField(
         max_length=200, blank=True, default="", verbose_name="Produto de interesse"
     )

@@ -10,40 +10,40 @@ class VendedorRequiredMixin(LoginRequiredMixin):
     """Permite acesso a usuários com perfil VENDEDOR, GESTOR ou ADMIN."""
 
     def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        if hasattr(request.user, "perfil"):
-            if request.user.perfil.papel in (
-                PerfilUsuario.VENDEDOR,
-                PerfilUsuario.GESTOR,
-                PerfilUsuario.ADMIN,
-            ):
-                return response
-        raise PermissionDenied
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if not hasattr(request.user, "perfil") or request.user.perfil.papel not in (
+            PerfilUsuario.VENDEDOR,
+            PerfilUsuario.GESTOR,
+            PerfilUsuario.ADMIN,
+        ):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AdminRequiredMixin(LoginRequiredMixin):
     """Permite acesso apenas a usuários com perfil ADMIN."""
 
     def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        if hasattr(request.user, "perfil"):
-            if request.user.perfil.papel == PerfilUsuario.ADMIN:
-                return response
-        raise PermissionDenied
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if not hasattr(request.user, "perfil") or request.user.perfil.papel != PerfilUsuario.ADMIN:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class GestorRequiredMixin(LoginRequiredMixin):
     """Permite acesso apenas a usuários com perfil GESTOR ou ADMIN."""
 
     def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        if hasattr(request.user, "perfil"):
-            if request.user.perfil.papel in (
-                PerfilUsuario.GESTOR,
-                PerfilUsuario.ADMIN,
-            ):
-                return response
-        raise PermissionDenied
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if not hasattr(request.user, "perfil") or request.user.perfil.papel not in (
+            PerfilUsuario.GESTOR,
+            PerfilUsuario.ADMIN,
+        ):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class VendedorWriteMixin(LoginRequiredMixin):
