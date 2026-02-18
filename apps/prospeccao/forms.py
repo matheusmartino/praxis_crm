@@ -23,7 +23,7 @@ class LeadForm(forms.ModelForm):
             "telefone": forms.TextInput(attrs={"class": "form-control"}),
             "whatsapp": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.EmailInput(attrs={"class": "form-control"}),
-            "origem": forms.TextInput(attrs={"class": "form-control"}),
+            "origem": forms.Select(attrs={"class": "form-select"}),
             "produto_interesse": forms.TextInput(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-select"}),
             "observacoes": forms.Textarea(attrs={"class": "form-control", "rows": 3}),

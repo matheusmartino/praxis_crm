@@ -15,7 +15,8 @@
       "Bash(start \"\" \"C:\\\\Users\\\\matheus.martino\\\\source\\\\repos_personal\\\\Praxis_CRM\\\\docs\\\\manual_usuario.html\")",
       "Bash(dir:*)",
       "Bash(ls \"C:\\\\Users\\\\matheus.martino\\\\source\\\\repos_personal\\\\Praxis_CRM\\\\templates\\\\includes\"\" 2>nul || echo \"Directory does not exist \")",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(grep:*)"
     ]
   }
 }

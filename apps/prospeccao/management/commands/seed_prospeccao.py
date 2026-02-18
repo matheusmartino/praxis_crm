@@ -42,6 +42,7 @@ def _criar_lead(*, nome, empresa="", telefone, whatsapp="", email="",
         origem=origem,
         produto_interesse=produto_interesse,
         observacoes=observacoes,
+        criado_por=3
     )
 
 

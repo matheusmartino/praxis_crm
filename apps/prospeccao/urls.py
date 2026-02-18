@@ -5,6 +5,7 @@ from apps.prospeccao.views import (
     DashboardProspeccaoView,
     FollowUpHojeView,
     LeadCreateView,
+    LeadDeleteView,
     LeadDetailView,
     LeadListView,
     LeadUpdateView,
@@ -20,4 +21,5 @@ urlpatterns = [
     path("<int:pk>/", LeadDetailView.as_view(), name="lead_detail"),
     path("<int:pk>/editar/", LeadUpdateView.as_view(), name="lead_update"),
     path("<int:pk>/registrar-contato/", ContatoLeadCreateView.as_view(), name="contato_create"),
+    path("<int:pk>/excluir/", LeadDeleteView.as_view(), name="lead_delete"),
 ]

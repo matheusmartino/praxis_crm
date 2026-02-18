@@ -7,6 +7,7 @@ Garante que todas as queries respeitem:
   3. Hierarquia gestor → vendedor (via Perfil.gestor)
 """
 
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 
 from apps.core.enums import PerfilUsuario
@@ -38,9 +39,11 @@ def aplicar_escopo_usuario(queryset, user, campo_usuario="vendedor"):
         - Papel desconhecido ou sem perfil/empresa: queryset vazio.
     """
     perfil = getattr(user, "perfil", None)
-    empresa = _obter_empresa(user)
-    if not perfil or not empresa:
+    ue = getattr(user, "usuario_empresa", None)
+    if not perfil or not ue:
         return queryset.none()
+
+    empresa = ue.empresa
 
     filtro_empresa = Q(**{f"{campo_usuario}__usuario_empresa__empresa": empresa})
 
@@ -48,8 +51,13 @@ def aplicar_escopo_usuario(queryset, user, campo_usuario="vendedor"):
         return queryset.filter(filtro_empresa)
 
     if perfil.papel == PerfilUsuario.GESTOR:
-        # Gestor vê dados dos seus vendedores + próprios dados
-        filtro_vendedores = Q(**{f"{campo_usuario}__perfil__gestor": user})
+        # Usa User.objects.filter(...) para garantir QuerySet[User] — tipo correto
+        # para filtros __in em campos FK que apontam para User.
+        # user.vendedores.values_list("user_id") produziria ValuesQuerySet[Perfil],
+        # que o ORM rejeita com "Cannot use QuerySet for 'Perfil'".
+        User = get_user_model()
+        vendedores = User.objects.filter(perfil__gestor=user)
+        filtro_vendedores = Q(**{f"{campo_usuario}__in": vendedores})
         filtro_proprio = Q(**{campo_usuario: user})
         return queryset.filter(filtro_empresa & (filtro_vendedores | filtro_proprio))
 
@@ -66,8 +74,6 @@ def obter_usuarios_visiveis(user):
 
     Usado em views de gestão que iteram sobre vendedores.
     """
-    from django.contrib.auth import get_user_model
-
     User = get_user_model()
 
     perfil = getattr(user, "perfil", None)
@@ -81,7 +87,7 @@ def obter_usuarios_visiveis(user):
         return base
 
     if perfil.papel == PerfilUsuario.GESTOR:
-        return base.filter(Q(perfil__gestor=user) )
+        return base.filter(perfil__gestor=user)
 
     if perfil.papel == PerfilUsuario.VENDEDOR:
         return base.filter(pk=user.pk)

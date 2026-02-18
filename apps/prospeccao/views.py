@@ -1,10 +1,13 @@
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import (
-    CreateView, DetailView, FormView, ListView, TemplateView, UpdateView,
+    CreateView, DeleteView, DetailView, FormView, ListView, TemplateView, UpdateView,
 )
 
+from apps.core.enums import PerfilUsuario
 from apps.core.mixins import GestorRequiredMixin, VendedorRequiredMixin, VendedorWriteMixin
 from apps.core.utils.query_scope import aplicar_escopo_usuario
 from apps.prospeccao.dashboard_service import obter_metricas_prospeccao
@@ -18,8 +21,9 @@ class LeadListView(VendedorRequiredMixin, ListView):
     template_name = "prospeccao/lead_list.html"
     context_object_name = "leads"
     paginate_by = 20
+    
 
-    def get_queryset(self):
+    def get_queryset(self):        
         qs = super().get_queryset()
         qs = aplicar_escopo_usuario(qs, self.request.user, "criado_por")
 
@@ -173,3 +177,41 @@ class DashboardProspeccaoView(GestorRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context.update(obter_metricas_prospeccao(user=self.request.user))
         return context
+
+
+class LeadDeleteView(GestorRequiredMixin, DeleteView):
+    """Exclusão de Lead — apenas GESTOR/ADMIN, sem status CONVERTIDO e sem contatos."""
+
+    model = Lead
+    success_url = reverse_lazy("prospeccao:lead_list")
+
+    def get_queryset(self):
+        return aplicar_escopo_usuario(Lead.objects.all(), self.request.user, "criado_por")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        perfil = getattr(request.user, "perfil", None)
+        if not perfil or perfil.papel not in (PerfilUsuario.GESTOR, PerfilUsuario.ADMIN):
+            raise PermissionDenied
+
+        qs = aplicar_escopo_usuario(Lead.objects.all(), request.user, "criado_por")
+        lead = get_object_or_404(qs, pk=kwargs["pk"])
+
+        if lead.status == StatusLead.CONVERTIDO:
+            messages.error(request, "Não é possível excluir um lead já convertido.")
+            return redirect("prospeccao:lead_detail", pk=lead.pk)
+
+        if lead.contatos.exists():
+            messages.error(request, "Não é possível excluir um lead com contatos registrados.")
+            return redirect("prospeccao:lead_detail", pk=lead.pk)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        # Sem página de confirmação separada — exclusão via POST direto.
+            self.object = self.get_object()  # <- ESSENCIAL
+            self.object.delete()
+            messages.success(request, "Lead excluído com sucesso.")
+            return redirect(self.success_url)
