@@ -11,6 +11,25 @@
     <link href="{% static 'css/praxis-v2.css' %}" rel="stylesheet">
 </head>
 <body>
+    {% if settings.ENVIRONMENT_NAME == "DEV" %}
+<div style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #c0392b;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    padding: 6px;
+    z-index: 9999;
+    ">
+    🚧 AMBIENTE DE DESENVOLVIMENTO 🚧
+</div>
+<div style="height:40px;"></div>
+{% endif %}
+
+    
     {% if user.is_authenticated %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
