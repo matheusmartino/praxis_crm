@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Histórico — {{ cliente.nome }}{% endblock %}
+
+{% block content %}
+
+{# ── Cabeçalho ────────────────────────────────────────────────────────────── #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">
+            <i class="bi bi-clock-history me-2"></i>Histórico de Contatos
+        </h2>
+        <small class="text-muted">
+            Cliente: <strong>{{ cliente.nome }}</strong>
+        </small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'carteira_ativa:registrar_contato' cliente.pk %}"
+           class="btn btn-success btn-sm">
+            <i class="bi bi-telephone-plus me-1"></i> Registrar contato
+        </a>
+        <a href="{% url 'carteira_ativa:carteira_fila' %}"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Voltar à fila
+        </a>
+    </div>
+</div>
+
+{# ── Info do cliente ───────────────────────────────────────────────────────── #}
+<div class="card mb-4">
+    <div class="card-body py-2">
+        <div class="row small text-muted">
+            <div class="col-auto">
+                <i class="bi bi-building me-1"></i>{{ cliente.get_tipo_display }}
+            </div>
+            {% if cliente.telefone_contato or cliente.telefone %}
+            <div class="col-auto">
+                <i class="bi bi-telephone me-1"></i>
+                {{ cliente.telefone_contato|default:cliente.telefone }}
+            </div>
+            {% endif %}
+            {% if cliente.data_ultimo_contato %}
+            <div class="col-auto">
+                <i class="bi bi-calendar-check me-1"></i>
+                Último contato: {{ cliente.data_ultimo_contato|date:"d/m/Y H:i" }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{# ── Lista de contatos ────────────────────────────────────────────────────── #}
+{% if contatos %}
+<div class="list-group">
+    {% for contato in contatos %}
+    <div class="list-group-item">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                {# Tipo e data #}
+                <span class="fw-semibold">
+                    <i class="bi
+                        {% if contato.tipo == 'LIGACAO' %}bi-telephone
+                        {% elif contato.tipo == 'EMAIL' %}bi-envelope
+                        {% elif contato.tipo == 'REUNIAO' %}bi-people
+                        {% elif contato.tipo == 'WHATSAPP' %}bi-whatsapp
+                        {% elif contato.tipo == 'VISITA' %}bi-geo-alt
+                        {% else %}bi-chat-dots
+                        {% endif %}
+                        me-1">
+                    </i>
+                    {{ contato.get_tipo_display }}
+                </span>
+                <span class="text-muted ms-2 small">
+                    {{ contato.criado_em|date:"d/m/Y H:i" }}
+                    — {{ contato.responsavel.get_full_name|default:contato.responsavel.username }}
+                </span>
+
+                {# Observação #}
+                {% if contato.observacao %}
+                <p class="mb-1 mt-1 text-secondary">{{ contato.observacao }}</p>
+                {% endif %}
+
+                {# Próxima ação #}
+                {% if contato.proxima_acao_em %}
+                <small class="text-info">
+                    <i class="bi bi-calendar-event me-1"></i>
+                    Próxima ação: {{ contato.proxima_acao_em|date:"d/m/Y" }}
+                </small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if contatos|length == 50 %}
+<p class="text-muted small mt-2 text-center">
+    Exibindo os 50 contatos mais recentes.
+</p>
+{% endif %}
+
+{% else %}
+<div class="text-center text-muted py-5">
+    <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+    Nenhum contato registrado ainda para este cliente.
+    <div class="mt-2">
+        <a href="{% url 'carteira_ativa:registrar_contato' cliente.pk %}"
+           class="btn btn-success btn-sm">
+            <i class="bi bi-telephone-plus me-1"></i> Registrar primeiro contato
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
