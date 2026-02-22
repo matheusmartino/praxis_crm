@@ -11,7 +11,7 @@
     <link href="{% static 'css/praxis-v2.css' %}" rel="stylesheet">
 </head>
 <body>
-{% if request.get_host == "localhost:8000" or request.get_host == "dev.praxisapp.com.br" or request.get_host == "127.0.0.1" %}
+{% if request.get_host == "localhost:8000" or request.get_host == "dev.praxisapp.com.br" or request.get_host == "127.0.0.1:8000" %}
 <div style="
    position: fixed;
     top: 78px;
