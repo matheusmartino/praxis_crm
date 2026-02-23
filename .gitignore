@@ -6,15 +6,12 @@ __pycache__/
 # Virtual environment
 venv/
 
-prod.py
-dev.py
-
 # Django
 *.sqlite3
 #staticfiles/
 *.log
 logs/
-
+git 
 # IDE
 .vscode/
 .idea/

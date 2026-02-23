@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "apps.sales",
     "apps.gestao",
     "apps.prospeccao",
+    "apps.carteira_ativa",
 ]
 
 MIDDLEWARE = [

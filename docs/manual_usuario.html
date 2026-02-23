@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manual do Usuário - Praxis CRM</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,33 +17,11 @@
         }
 
         /* Capa */
-        .cover {
-            text-align: center;
-            padding: 100px 20px;
-            page-break-after: always;
-        }
-
-        .cover h1 {
-            font-size: 3em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .cover .subtitle {
-            font-size: 1.5em;
-            color: #7f8c8d;
-            margin-bottom: 60px;
-        }
-
-        .cover .version {
-            font-size: 1.2em;
-            color: #95a5a6;
-        }
-
-        .cover .date {
-            margin-top: 100px;
-            color: #bdc3c7;
-        }
+        .cover { text-align: center; padding: 100px 20px; page-break-after: always; }
+        .cover h1 { font-size: 3em; color: #2c3e50; margin-bottom: 20px; }
+        .cover .subtitle { font-size: 1.5em; color: #7f8c8d; margin-bottom: 60px; }
+        .cover .version { font-size: 1.2em; color: #95a5a6; }
+        .cover .date { margin-top: 100px; color: #bdc3c7; }
 
         /* Títulos */
         h1 {
@@ -59,7 +33,6 @@
             font-weight: 600;
             page-break-after: avoid;
         }
-
         h2 {
             color: #2c3e50;
             margin: 30px 0 15px 0;
@@ -69,7 +42,6 @@
             font-weight: 600;
             page-break-after: avoid;
         }
-
         h3 {
             color: #7f8c8d;
             margin: 20px 0 10px 0;
@@ -79,18 +51,9 @@
         }
 
         /* Parágrafos e listas */
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-
-        ul, ol {
-            margin: 15px 0 15px 30px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
+        p { margin-bottom: 15px; text-align: justify; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin-bottom: 8px; }
 
         /* Tabelas */
         table {
@@ -99,13 +62,11 @@
             margin: 20px 0;
             font-size: 0.85em;
         }
-
         th, td {
             border: 1px solid rgba(0, 0, 0, 0.06);
             padding: 12px;
             text-align: left;
         }
-
         th {
             background-color: #f8f9fa;
             color: #7f8c8d;
@@ -114,10 +75,7 @@
             text-transform: uppercase;
             letter-spacing: 0.04em;
         }
-
-        tr:nth-child(even) {
-            background-color: rgba(0, 0, 0, 0.015);
-        }
+        tr:nth-child(even) { background-color: rgba(0, 0, 0, 0.015); }
 
         /* Caixas de destaque */
         .info-box {
@@ -127,7 +85,6 @@
             margin: 20px 0;
             border-radius: 0 5px 5px 0;
         }
-
         .warning-box {
             background-color: #fef9e7;
             border-left: 4px solid #f39c12;
@@ -135,7 +92,6 @@
             margin: 20px 0;
             border-radius: 0 5px 5px 0;
         }
-
         .success-box {
             background-color: #e8f8f5;
             border-left: 4px solid #27ae60;
@@ -172,37 +128,14 @@
             letter-spacing: 0.02em;
             margin-right: 5px;
         }
-
-        .badge-vendedor {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .badge-gestor {
-            background-color: #9b59b6;
-            color: white;
-        }
-
-        .badge-admin {
-            background-color: #e74c3c;
-            color: white;
-        }
+        .badge-vendedor { background-color: #3498db; color: white; }
+        .badge-gestor { background-color: #9b59b6; color: white; }
+        .badge-admin { background-color: #e74c3c; color: white; }
 
         /* Status */
-        .status-ok {
-            color: #27ae60;
-            font-weight: bold;
-        }
-
-        .status-atencao {
-            color: #f39c12;
-            font-weight: bold;
-        }
-
-        .status-risco {
-            color: #e74c3c;
-            font-weight: bold;
-        }
+        .status-ok { color: #27ae60; font-weight: bold; }
+        .status-atencao { color: #f39c12; font-weight: bold; }
+        .status-risco { color: #e74c3c; font-weight: bold; }
 
         /* Índice */
         .toc {
@@ -211,61 +144,19 @@
             border-radius: 10px;
             margin: 30px 0;
         }
-
-        .toc h2 {
-            border: none;
-            padding: 0;
-            margin-top: 0;
-        }
-
-        .toc ul {
-            list-style: none;
-            margin-left: 0;
-        }
-
-        .toc li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #ddd;
-        }
-
-        .toc li:last-child {
-            border-bottom: none;
-        }
+        .toc h2 { border: none; padding: 0; margin-top: 0; }
+        .toc ul { list-style: none; margin-left: 0; }
+        .toc li { padding: 8px 0; border-bottom: 1px dashed #ddd; }
+        .toc li:last-child { border-bottom: none; }
 
         /* Impressão */
         @media print {
-            body {
-                padding: 0;
-                font-size: 11pt;
-            }
-
-            .cover {
-                padding: 150px 20px;
-            }
-
-            h1 {
-                page-break-before: always;
-            }
-
-            h1:first-of-type {
-                page-break-before: avoid;
-            }
-
-            .no-break {
-                page-break-inside: avoid;
-            }
-
-            .info-box, .warning-box, .success-box, table {
-                page-break-inside: avoid;
-            }
-        }
-
-        /* Ícones simulados */
-        .icon {
-            display: inline-block;
-            width: 20px;
-            text-align: center;
-            margin-right: 5px;
+            body { padding: 0; font-size: 11pt; }
+            .cover { padding: 150px 20px; }
+            h1 { page-break-before: always; }
+            h1:first-of-type { page-break-before: avoid; }
+            .no-break { page-break-inside: avoid; }
+            .info-box, .warning-box, .success-box, table { page-break-inside: avoid; }
         }
 
         /* Botão de voltar */
@@ -284,20 +175,9 @@
             transition: background-color 0.15s ease;
             z-index: 1000;
         }
-
-        .back-button:hover {
-            background-color: #34495e;
-        }
-
-        .back-button::before {
-            content: '← ';
-        }
-
-        @media print {
-            .back-button {
-                display: none;
-            }
-        }
+        .back-button:hover { background-color: #34495e; }
+        .back-button::before { content: '← '; }
+        @media print { .back-button { display: none; } }
     </style>
 </head>
 <body>
@@ -309,7 +189,7 @@
 <div class="cover">
     <h1>Praxis CRM</h1>
     <p class="subtitle">Manual do Usuário</p>
-    <p class="version">Versão 4.0</p>
+    <p class="version">Versão 5.0</p>
     <p class="date">Fevereiro de 2026</p>
 </div>
 
@@ -323,12 +203,14 @@
         <li><strong>4.</strong> Guia do Vendedor</li>
         <li><strong>5.</strong> Guia do Gestor Comercial</li>
         <li><strong>6.</strong> Guia do Administrador</li>
-        <li><strong>7.</strong> Pipeline de Vendas</li>
-        <li><strong>8.</strong> Metas Comerciais</li>
-        <li><strong>9.</strong> Follow-up e Disciplina Comercial</li>
-        <li><strong>10.</strong> Lembretes e Alertas</li>
-        <li><strong>11.</strong> Perguntas Frequentes</li>
-        <li><strong>12.</strong> <a href="#prospeccao" style="color: inherit; text-decoration: none;">Módulo de Prospecção</a></li>
+        <li><strong>7.</strong> Carteira Ativa (Clientes “quentes”)</li>
+        <li><strong>8.</strong> Pipeline de Vendas</li>
+        <li><strong>9.</strong> Metas Comerciais</li>
+        <li><strong>10.</strong> Follow-up e Disciplina Comercial</li>
+        <li><strong>11.</strong> Lembretes e Alertas</li>
+        <li><strong>12.</strong> Filtros e Busca</li>
+        <li><strong>13.</strong> Módulo de Prospecção</li>
+        <li><strong>14.</strong> Perguntas Frequentes</li>
     </ul>
 </div>
 
@@ -340,10 +222,11 @@
 <div class="info-box">
     <strong>Principais funcionalidades:</strong>
     <ul>
-        <li>Cadastro e gestão de clientes (leads)</li>
-        <li>Pipeline de vendas com etapas personalizadas</li>
-        <li>Registro de interações com clientes</li>
-        <li>Metas comerciais e acompanhamento de performance</li>
+        <li>Cadastro e gestão de clientes</li>
+        <li>Pipeline de vendas com etapas</li>
+        <li>Registro de interações e follow-ups</li>
+        <li>Metas comerciais e acompanhamento</li>
+        <li><strong>Carteira Ativa</strong> para manter clientes “quentes” com semáforo e fila de contato</li>
         <li>Dashboards para gestão</li>
     </ul>
 </div>
@@ -362,17 +245,17 @@
     <tr>
         <td><span class="badge badge-vendedor">VENDEDOR</span></td>
         <td>Responsável pela prospecção e fechamento de vendas</td>
-        <td>Seus próprios clientes, oportunidades e metas</td>
+        <td>Seus próprios clientes, oportunidades e pendências</td>
     </tr>
     <tr>
         <td><span class="badge badge-gestor">GESTOR</span></td>
         <td>Acompanha a performance do time comercial</td>
-        <td>Visualização de todos os dados (somente leitura)</td>
+        <td>Visão do time e dashboards (somente leitura)</td>
     </tr>
     <tr>
         <td><span class="badge badge-admin">ADMIN</span></td>
         <td>Administrador do sistema</td>
-        <td>Acesso total, incluindo configurações</td>
+        <td>Acesso total, incluindo configurações e Admin</td>
     </tr>
 </table>
 
@@ -392,63 +275,27 @@
         <td>Sim</td>
     </tr>
     <tr>
-        <td>Criar oportunidades</td>
-        <td>Sim</td>
-        <td>Não</td>
-        <td>Sim</td>
-    </tr>
-    <tr>
         <td>Ver todos os clientes</td>
         <td>Não (apenas seus)</td>
         <td>Sim</td>
         <td>Sim</td>
     </tr>
     <tr>
-        <td>Ativar clientes</td>
-        <td>Não</td>
-        <td>Não</td>
+        <td>Ver Carteira Ativa (Fila)</td>
+        <td>Sim (seus clientes)</td>
+        <td>Sim (time)</td>
         <td>Sim</td>
     </tr>
     <tr>
-        <td>Ver dashboards de gestão</td>
-        <td>Não</td>
-        <td>Sim</td>
-        <td>Sim</td>
-    </tr>
-    <tr>
-        <td>Criar metas</td>
-        <td>Não</td>
-        <td>Não</td>
-        <td>Sim</td>
-    </tr>
-    <tr>
-        <td>Ver metas do time</td>
-        <td>Não (apenas sua)</td>
-        <td>Sim</td>
-        <td>Sim</td>
-    </tr>
-    <tr>
-        <td>Editar follow-up</td>
-        <td>Sim (suas oportunidades)</td>
-        <td>Não</td>
-        <td>Não</td>
-    </tr>
-    <tr>
-        <td>Ver oportunidades sem follow-up</td>
+        <td>Ver Dashboard da Carteira</td>
         <td>Não</td>
         <td>Sim</td>
         <td>Sim</td>
     </tr>
     <tr>
-        <td>Marcar oportunidade como perdida (com motivo)</td>
-        <td>Sim (suas oportunidades)</td>
-        <td>Não</td>
-        <td>Sim</td>
-    </tr>
-    <tr>
-        <td>Ver insights e tempo médio por etapa</td>
-        <td>Não</td>
-        <td>Sim</td>
+        <td>Registrar contato na Carteira</td>
+        <td>Sim (seus clientes)</td>
+        <td>Sim (se permitido pelo escopo)</td>
         <td>Sim</td>
     </tr>
 </table>
@@ -472,7 +319,7 @@
 
 <h2>3.2 Menu de Navegação</h2>
 
-<p>Após o login, você verá a barra de navegação no topo da tela com os seguintes itens:</p>
+<p>Após o login, você verá a barra de navegação no topo da tela. Os itens podem variar conforme seu perfil.</p>
 
 <table>
     <tr>
@@ -481,36 +328,30 @@
         <th>Disponível para</th>
     </tr>
     <tr>
-        <td>Clientes</td>
-        <td>Lista e cadastro de clientes</td>
+        <td>Prospecção</td>
+        <td>Leads e follow-ups de prospecção</td>
         <td>Todos</td>
     </tr>
     <tr>
-        <td>Oportunidades</td>
-        <td>Lista e cadastro de oportunidades</td>
+        <td>Carteira Ativa</td>
+        <td>Fila de contato e semáforo de clientes (manter cliente “quente”)</td>
         <td>Todos</td>
     </tr>
     <tr>
-        <td>Interações</td>
-        <td>Registro de contatos com clientes</td>
+        <td>CRM</td>
+        <td>Clientes, oportunidades e interações</td>
         <td>Todos</td>
-    </tr>
-    <tr>
-        <td>Minhas Pendências</td>
-        <td>Follow-ups atrasados ou para hoje</td>
-        <td>Vendedor</td>
-    </tr>
-    <tr>
-        <td>Minha Meta</td>
-        <td>Acompanhamento da meta pessoal</td>
-        <td>Vendedor</td>
     </tr>
     <tr>
         <td>Gestão</td>
-        <td>Dashboards e relatórios</td>
+        <td>Dashboards e relatórios do CRM</td>
         <td>Gestor e Admin</td>
     </tr>
 </table>
+
+<div class="info-box">
+    <strong>Dica:</strong> A <strong>Carteira Ativa</strong> é um módulo complementar ao CRM. O cadastro do cliente é feito no CRM, e a Carteira apenas ajuda a manter o relacionamento em dia.
+</div>
 
 <!-- 4. GUIA DO VENDEDOR -->
 <h1>4. Guia do Vendedor</h1>
@@ -518,7 +359,7 @@
 <h2>4.1 Cadastrando um Cliente</h2>
 
 <ol>
-    <li>Acesse <strong>Clientes</strong> no menu</li>
+    <li>Acesse <strong>CRM → Clientes</strong> no menu</li>
     <li>Clique em <strong>Novo Cliente</strong></li>
     <li>Preencha os dados obrigatórios:
         <ul>
@@ -531,13 +372,17 @@
 </ol>
 
 <div class="info-box">
-    <strong>Dica:</strong> O cliente será criado com status <strong>Provisório</strong>. Isso permite cadastro rápido sem burocracia. O CNPJ/CPF será exigido apenas quando o admin for ativar o cliente.
+    <strong>Dica:</strong> O cliente pode ser criado com status <strong>Provisório</strong>. Isso permite cadastro rápido sem burocracia. O CNPJ/CPF pode ser exigido apenas quando houver ativação administrativa.
+</div>
+
+<div class="success-box">
+    <strong>Importante:</strong> Cliente cadastrado no CRM aparece automaticamente na <strong>Carteira Ativa</strong> como <strong>Sem contato</strong> (prioridade máxima).
 </div>
 
 <h2>4.2 Cadastrando uma Oportunidade</h2>
 
 <ol>
-    <li>Acesse <strong>Oportunidades</strong> no menu</li>
+    <li>Acesse <strong>CRM → Oportunidades</strong> no menu</li>
     <li>Clique em <strong>Nova Oportunidade</strong></li>
     <li>Preencha:
         <ul>
@@ -550,134 +395,34 @@
     <li>Clique em <strong>Salvar</strong></li>
 </ol>
 
-<h2>4.3 Avançando no Pipeline</h2>
+<h2>4.3 Registrando Interações</h2>
 
-<p>Cada oportunidade passa por etapas até o fechamento:</p>
+<p>Registre todos os contatos realizados com o cliente (no CRM ou na Carteira Ativa):</p>
 
-<div class="flow">
-Prospecção → Qualificação → Proposta → Negociação → Fechamento
-</div>
-
-<p>Para avançar uma oportunidade:</p>
-
-<ol>
-    <li>Acesse a oportunidade clicando nela na lista</li>
-    <li>Na tela de detalhes, clique em <strong>Avançar Etapa</strong></li>
-    <li>A oportunidade passará para a próxima etapa automaticamente</li>
-</ol>
+<ul>
+    <li><strong>CRM → Interações:</strong> quando o contato estiver ligado a uma oportunidade específica</li>
+    <li><strong>Carteira Ativa → Registrar contato:</strong> quando o objetivo for manter o relacionamento do cliente “quente”</li>
+</ul>
 
 <div class="warning-box">
-    <strong>Atenção:</strong> Oportunidades marcadas como <strong>Perdida</strong> ou já em <strong>Fechamento</strong> não podem avançar.
+    <strong>Boas práticas:</strong> Se você ligou para um cliente “antigo” só para manter vínculo (e não por causa de uma oportunidade), use a <strong>Carteira Ativa</strong>. Se o assunto foi uma proposta/negociação, use as <strong>Interações</strong> do CRM.
 </div>
-
-<h2>4.4 Registrando Interações</h2>
-
-<p>Registre todos os contatos realizados com o cliente:</p>
-
-<ol>
-    <li>Acesse <strong>Interações</strong> no menu</li>
-    <li>Clique em <strong>Nova Interação</strong></li>
-    <li>Preencha:
-        <ul>
-            <li><strong>Oportunidade:</strong> Selecione a oportunidade relacionada</li>
-            <li><strong>Tipo:</strong> Ligação, E-mail, Reunião, WhatsApp ou Visita</li>
-            <li><strong>Descrição:</strong> Resumo do que foi tratado</li>
-        </ul>
-    </li>
-    <li>Clique em <strong>Salvar</strong></li>
-</ol>
-
-<h2>4.5 Acompanhando sua Meta</h2>
-
-<ol>
-    <li>Acesse <strong>Minha Meta</strong> no menu</li>
-    <li>Visualize:
-        <ul>
-            <li><strong>Meta:</strong> Valor definido para o mês</li>
-            <li><strong>Realizado:</strong> Vendas fechadas no mês</li>
-            <li><strong>Pipeline:</strong> Oportunidades em andamento</li>
-            <li><strong>Status:</strong> Situação da meta (OK, Atenção ou Risco)</li>
-        </ul>
-    </li>
-</ol>
 
 <!-- 5. GUIA DO GESTOR -->
 <h1>5. Guia do Gestor Comercial</h1>
 
 <p>O gestor tem acesso de <strong>somente leitura</strong> a todos os dados do sistema para análise e acompanhamento.</p>
 
-<h2>5.1 Dashboard de Gestão</h2>
+<h2>5.1 Dashboards</h2>
 
-<p>Acesse pelo menu <strong>Gestão → Dashboard</strong>:</p>
-
+<p>O gestor pode acompanhar o time por dois caminhos:</p>
 <ul>
-    <li><strong>Total de Leads:</strong> Clientes com status Provisório</li>
-    <li><strong>Clientes Ativos:</strong> Clientes já aprovados</li>
-    <li><strong>Oportunidades Abertas:</strong> Negócios em andamento</li>
-    <li><strong>Valor em Pipeline:</strong> Soma dos valores das oportunidades abertas</li>
-</ul>
-
-<h2>5.2 Leads por Vendedor</h2>
-
-<p>Acesse pelo menu <strong>Gestão → Leads por Vendedor</strong>:</p>
-
-<table>
-    <tr>
-        <th>Métrica</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Leads Criados</td>
-        <td>Clientes provisórios criados pelo vendedor</td>
-    </tr>
-    <tr>
-        <td>Total Clientes</td>
-        <td>Total de clientes do vendedor</td>
-    </tr>
-    <tr>
-        <td>Oportunidades</td>
-        <td>Número de oportunidades geradas</td>
-    </tr>
-    <tr>
-        <td>Conversão</td>
-        <td>% de clientes que geraram oportunidades</td>
-    </tr>
-</table>
-
-<h2>5.3 Pipeline Geral</h2>
-
-<p>Acesse pelo menu <strong>Gestão → Pipeline Geral</strong>:</p>
-
-<ul>
-    <li>Visão consolidada por etapa</li>
-    <li>Valor total em cada etapa</li>
-    <li>Detalhamento por vendedor</li>
-</ul>
-
-<h2>5.4 Metas por Vendedor</h2>
-
-<p>Acesse pelo menu <strong>Gestão → Metas por Vendedor</strong>:</p>
-
-<ul>
-    <li>Meta de cada vendedor</li>
-    <li>Valor realizado</li>
-    <li>Valor em pipeline</li>
-    <li>Status da meta</li>
-</ul>
-
-<h2>5.5 Oportunidades sem Follow-up</h2>
-
-<p>Acesse pelo menu <strong>Gestão → Oportunidades sem Follow-up</strong>:</p>
-
-<ul>
-    <li>Oportunidades sem data de follow-up definida</li>
-    <li>Oportunidades paradas há muitos dias</li>
-    <li>Vendedor responsável por cada oportunidade</li>
-    <li>Dias sem movimentação</li>
+    <li><strong>Gestão (CRM):</strong> dashboards ligados a oportunidades, pipeline e metas</li>
+    <li><strong>Carteira Ativa → Dashboard:</strong> saúde da carteira de clientes (semáforo e disciplina de contato)</li>
 </ul>
 
 <div class="info-box">
-    <strong>Dica:</strong> Use esta visão para identificar oportunidades que podem estar sendo esquecidas pelo time e oriente os vendedores a manterem a disciplina comercial.
+    <strong>Dica:</strong> Se o objetivo é “não deixar cliente sumir e ir pro mercado”, o painel mais importante é o da <strong>Carteira Ativa</strong>.
 </div>
 
 <!-- 6. GUIA DO ADMINISTRADOR -->
@@ -697,1230 +442,151 @@ Prospecção → Qualificação → Proposta → Negociação → Fechamento
 
 <ol>
     <li>No Admin, acesse <strong>Usuários</strong></li>
-    <li>Para criar um novo usuário:
-        <ul>
-            <li>Clique em <strong>Adicionar usuário</strong></li>
-            <li>Defina usuário e senha</li>
-            <li>Na próxima tela, defina o <strong>Perfil</strong> (Vendedor, Gestor ou Admin)</li>
-            <li>Marque <strong>É da equipe</strong> se o usuário precisar acessar o Admin</li>
-        </ul>
-    </li>
+    <li>Crie/edite usuários e configure o perfil (Vendedor, Gestor ou Admin)</li>
 </ol>
 
 <h2>6.3 Ativando Clientes</h2>
 
-<p>Clientes criados por vendedores ficam com status <strong>Provisório</strong> até serem aprovados:</p>
-
-<ol>
-    <li>No Admin, acesse <strong>Clientes</strong></li>
-    <li>Localize o cliente provisório</li>
-    <li>Verifique se o CNPJ/CPF está preenchido</li>
-    <li>Selecione o cliente e use a ação <strong>Ativar clientes selecionados</strong></li>
-</ol>
+<p>Clientes podem ficar com status <strong>Provisório</strong> até serem aprovados.</p>
 
 <div class="warning-box">
-    <strong>Regra:</strong> O CNPJ/CPF é obrigatório para ativar um cliente. Caso não esteja preenchido, a ativação será bloqueada.
+    <strong>Importante:</strong> A <strong>Carteira Ativa</strong> considera clientes <strong>Ativos e Provisórios</strong>, para funcionar mesmo quando o processo de “ativação” do CRM não é usado no dia a dia.
 </div>
 
-<h2>6.4 Cadastrando Metas</h2>
+<!-- 7. CARTEIRA ATIVA -->
+<h1>7. Carteira Ativa (Clientes “quentes”)</h1>
 
-<ol>
-    <li>No Admin, acesse <strong>Metas Comerciais</strong></li>
-    <li>Clique em <strong>Adicionar meta comercial</strong></li>
-    <li>Preencha:
-        <ul>
-            <li><strong>Vendedor:</strong> Selecione o vendedor</li>
-            <li><strong>Mês:</strong> Mês da meta</li>
-            <li><strong>Ano:</strong> Ano da meta</li>
-            <li><strong>Valor da Meta:</strong> Valor monetário</li>
-        </ul>
-    </li>
-    <li>Clique em <strong>Salvar</strong></li>
-</ol>
+<p>A <strong>Carteira Ativa</strong> é um módulo para manter relacionamento com clientes já cadastrados. O objetivo é simples: <strong>não deixar o cliente esfriar</strong> e sair por aí orçando com concorrente sem você nem saber.</p>
 
 <div class="info-box">
-    <strong>Regra:</strong> Cada vendedor pode ter apenas UMA meta por mês/ano. Se tentar criar uma duplicada, o sistema bloqueará.
+    <strong>Resumo:</strong> Cliente nasce no <strong>CRM</strong>. A Carteira Ativa organiza uma <strong>fila de contato</strong> com semáforo e histórico.
 </div>
 
-<!-- 7. PIPELINE DE VENDAS -->
-<h1>7. Pipeline de Vendas</h1>
+<h2>7.1 Como um cliente entra na Carteira</h2>
+
+<p>O cadastro do cliente é feito em <strong>CRM → Clientes → Novo Cliente</strong>. Depois disso, ele aparece automaticamente na Carteira.</p>
+
+<div class="success-box">
+    <strong>Regra de status:</strong> A Carteira Ativa inclui clientes com status <strong>Ativo</strong> e <strong>Provisório</strong>.
+</div>
+
+<h2>7.2 Fila de Contato</h2>
+
+<p>A tela <strong>Carteira Ativa → Fila</strong> mostra seus clientes ordenados por prioridade:</p>
+<ul>
+    <li>Primeiro: <strong>Sem contato</strong> (nunca contatado)</li>
+    <li>Depois: quem está há mais tempo sem contato (mais “frio”)</li>
+</ul>
+
+<h2>7.3 Semáforo</h2>
+
+<p>O sistema usa um semáforo simples baseado em dias sem contato:</p>
+
+<table>
+    <tr>
+        <th>Status</th>
+        <th>Condição</th>
+        <th>Significado</th>
+    </tr>
+    <tr>
+        <td><span class="badge" style="background:#6c757d;color:#fff;">Sem contato</span></td>
+        <td>Nunca contatado</td>
+        <td>Prioridade máxima: precisa de primeiro toque</td>
+    </tr>
+    <tr>
+        <td><span class="badge" style="background:#dc3545;color:#fff;">Crítico</span></td>
+        <td>41+ dias</td>
+        <td>Risco de perder presença / cliente esfriando</td>
+    </tr>
+    <tr>
+        <td><span class="badge" style="background:#ffc107;color:#000;">Atenção</span></td>
+        <td>21–40 dias</td>
+        <td>Hora de ligar e manter o vínculo</td>
+    </tr>
+    <tr>
+        <td><span class="badge" style="background:#198754;color:#fff;">Em dia</span></td>
+        <td>0–20 dias</td>
+        <td>Relacionamento sob controle</td>
+    </tr>
+</table>
+
+<h2>7.4 Registrar contato</h2>
+
+<p>Para registrar um contato:</p>
+<ol>
+    <li>Na fila, clique no botão de telefone <strong>Registrar contato</strong></li>
+    <li>Escolha o tipo (Ligação, WhatsApp, E-mail, Visita, Outro)</li>
+    <li>Escreva uma observação curta (o suficiente para lembrar depois)</li>
+    <li>Salve</li>
+</ol>
+
+<div class="success-box">
+    <strong>Resultado:</strong> Ao salvar, a data de <strong>Último contato</strong> do cliente é atualizada e o semáforo muda automaticamente.
+</div>
+
+<h2>7.5 Histórico</h2>
+<p>O botão <strong>Histórico</strong> mostra os contatos já registrados para aquele cliente (quem fez, quando fez e o que foi tratado).</p>
+
+<h2>7.6 Dashboard da Carteira (Gestor)</h2>
+<p>Gestores e Admins têm acesso ao painel: <strong>Carteira Ativa → Dashboard</strong>.</p>
+
+<ul>
+    <li>KPIs: Total, Sem contato, Crítico, Atenção, Em dia e Contatados 7 dias</li>
+    <li>Distribuição por vendedor (como está a carteira de cada um)</li>
+    <li>Contatos nos últimos 30 dias por vendedor (disciplina do time)</li>
+</ul>
+
+<div class="warning-box">
+    <strong>Importante:</strong> O vendedor não vê o Dashboard. Ele vê a fila e trabalha. O gestor vê o painel e faz a gestão.
+</div>
+
+<!-- 8. PIPELINE DE VENDAS -->
+<h1>8. Pipeline de Vendas</h1>
 
 <p>O pipeline é o caminho que uma oportunidade percorre desde o primeiro contato até o fechamento da venda.</p>
 
-<h2>7.1 Etapas do Pipeline</h2>
-
-<div class="no-break">
-<h3>Prospecção</h3>
-<p>Primeiro contato com o potencial cliente. Ainda não há demanda validada.</p>
-<p><strong>Exemplos:</strong> Lead frio, indicação, primeiro contato via WhatsApp.</p>
-</div>
-
-<div class="no-break">
-<h3>Qualificação</h3>
-<p>O vendedor validou que o lead tem potencial real de compra.</p>
-<p><strong>Exemplos:</strong> Confirmação de volume, identificação do decisor, pedido de cotação.</p>
-</div>
-
-<div class="no-break">
-<h3>Proposta</h3>
-<p>Uma proposta comercial foi apresentada ao cliente.</p>
-<p><strong>Exemplos:</strong> Orçamento enviado, proposta formal por e-mail.</p>
-</div>
-
-<div class="no-break">
-<h3>Negociação</h3>
-<p>Cliente demonstrou intenção de fechar, mas negocia condições.</p>
-<p><strong>Exemplos:</strong> Ajuste de preço, negociação de prazos.</p>
-</div>
-
-<div class="no-break">
-<h3>Fechamento</h3>
-<p>Venda concluída com sucesso.</p>
-<p><strong>Exemplos:</strong> Pedido confirmado, contrato assinado.</p>
-</div>
-
-<div class="no-break">
-<h3>Perdida</h3>
-<p>Venda não realizada.</p>
-<p><strong>Exemplos:</strong> Cliente desistiu, concorrente venceu.</p>
-</div>
-
-<!-- 8. METAS COMERCIAIS -->
-<h1>8. Metas Comerciais</h1>
-
-<h2>8.1 Como funcionam as Metas</h2>
-
-<p>As metas são definidas mensalmente pelo administrador para cada vendedor.</p>
-
-<h2>8.2 Cálculo do Realizado</h2>
-
-<div class="success-box">
-    <strong>Realizado</strong> = Soma dos valores das oportunidades com status <strong>Fechamento</strong> no mês/ano.
-</div>
-
-<h2>8.3 Cálculo do Pipeline</h2>
-
-<div class="info-box">
-    <strong>Pipeline</strong> = Soma dos valores das oportunidades em andamento (excluindo Fechamento e Perdida).
-</div>
-
-<h2>8.4 Status da Meta</h2>
-
-<table>
-    <tr>
-        <th>Status</th>
-        <th>Condição</th>
-        <th>Significado</th>
-    </tr>
-    <tr>
-        <td><span class="status-ok">OK</span></td>
-        <td>Pipeline ≥ 1,5× a meta</td>
-        <td>Boa cobertura de pipeline</td>
-    </tr>
-    <tr>
-        <td><span class="status-atencao">ATENÇÃO</span></td>
-        <td>Pipeline ≥ meta</td>
-        <td>Cobertura mínima</td>
-    </tr>
-    <tr>
-        <td><span class="status-risco">RISCO</span></td>
-        <td>Pipeline < meta</td>
-        <td>Necessita ação urgente</td>
-    </tr>
-</table>
-
-<div class="info-box">
-    <strong>Por que 1,5×?</strong> Nem todas as oportunidades se convertem em venda. Ter um pipeline de pelo menos 1,5× a meta garante uma margem de segurança para atingir o objetivo.
-</div>
-
-<!-- 9. FOLLOW-UP E DISCIPLINA COMERCIAL -->
-<h1>9. Follow-up e Disciplina Comercial</h1>
-
-<p>O follow-up é uma das práticas mais importantes para o sucesso em vendas. No Praxis CRM, o sistema ajuda você a manter a disciplina comercial, garantindo que nenhuma oportunidade fique esquecida.</p>
-
-<div class="info-box">
-    <strong>Princípio:</strong> O sistema lembra, você age. O Praxis não envia mensagens automáticas nem persegue clientes. Ele apenas organiza suas pendências para que você nunca esqueça de dar o próximo passo.
-</div>
-
-<h2>9.1 O que é Follow-up</h2>
-
-<p>Follow-up é o acompanhamento sistemático de cada oportunidade de venda. Significa definir qual será a <strong>próxima ação</strong> e <strong>quando</strong> ela deve acontecer.</p>
-
-<p>Exemplos de próximas ações:</p>
-<ul>
-    <li>Ligar para confirmar recebimento da proposta</li>
-    <li>Enviar e-mail com condições especiais</li>
-    <li>Agendar reunião de fechamento</li>
-    <li>Verificar se o cliente tomou decisão</li>
-    <li>Retornar após período de férias do cliente</li>
-</ul>
-
-<h2>9.2 Campos de Follow-up</h2>
-
-<p>Cada oportunidade possui dois campos para controle de follow-up:</p>
-
-<table>
-    <tr>
-        <th>Campo</th>
-        <th>Descrição</th>
-        <th>Exemplo</th>
-    </tr>
-    <tr>
-        <td><strong>Próxima Ação</strong></td>
-        <td>O que você precisa fazer</td>
-        <td>"Ligar para saber decisão sobre proposta"</td>
-    </tr>
-    <tr>
-        <td><strong>Data do Follow-up</strong></td>
-        <td>Quando você deve agir</td>
-        <td>15/02/2026</td>
-    </tr>
-</table>
-
-<div class="warning-box">
-    <strong>Importante:</strong> Apenas o <span class="badge badge-vendedor">VENDEDOR</span> responsável pela oportunidade pode editar esses campos. Gestores e Admins apenas visualizam.
-</div>
-
-<h2>9.3 Como Definir o Follow-up</h2>
-
-<p>Para definir ou editar o follow-up de uma oportunidade:</p>
-
-<ol>
-    <li>Acesse a oportunidade na lista ou busca</li>
-    <li>Na tela de detalhes, clique em <strong>Editar Follow-up</strong></li>
-    <li>Preencha:
-        <ul>
-            <li><strong>Próxima ação:</strong> Descreva brevemente o que precisa fazer</li>
-            <li><strong>Data do follow-up:</strong> Quando você deve realizar a ação</li>
-        </ul>
-    </li>
-    <li>Clique em <strong>Salvar</strong></li>
-</ol>
-
-<div class="success-box">
-    <strong>Dica:</strong> Sempre que finalizar um contato com o cliente, já defina a próxima ação. Isso mantém a oportunidade sempre em movimento.
-</div>
-
-<h2>9.4 Lista de Pendências do Vendedor</h2>
-
-<p>O vendedor tem acesso a uma lista especial que mostra todas as suas pendências de follow-up:</p>
-
-<ol>
-    <li>Acesse <strong>Minhas Pendências</strong> no menu</li>
-    <li>Visualize todas as oportunidades que precisam de ação</li>
-</ol>
-
-<p>A lista mostra:</p>
-
-<table>
-    <tr>
-        <th>Coluna</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Cliente</td>
-        <td>Nome do cliente da oportunidade</td>
-    </tr>
-    <tr>
-        <td>Etapa</td>
-        <td>Em qual fase do pipeline está</td>
-    </tr>
-    <tr>
-        <td>Próxima Ação</td>
-        <td>O que você definiu que precisa fazer</td>
-    </tr>
-    <tr>
-        <td>Data Follow-up</td>
-        <td>Quando deveria ter sido feito</td>
-    </tr>
-    <tr>
-        <td>Dias em Atraso</td>
-        <td>Quantos dias passou da data</td>
-    </tr>
-</table>
-
-<div class="info-box">
-    <strong>Ordenação:</strong> A lista mostra primeiro as oportunidades mais atrasadas, para que você priorize o que está pendente há mais tempo.
-</div>
-
-<h2>9.5 Indicadores Visuais de Status</h2>
-
-<p>O sistema usa cores para indicar a situação de cada follow-up:</p>
-
-<table>
-    <tr>
-        <th>Status</th>
-        <th>Condição</th>
-        <th>Significado</th>
-    </tr>
-    <tr>
-        <td><span class="status-ok">Em dia</span></td>
-        <td>Data do follow-up ainda não chegou</td>
-        <td>Tudo sob controle</td>
-    </tr>
-    <tr>
-        <td><span class="status-atencao">Hoje</span></td>
-        <td>Data do follow-up é hoje</td>
-        <td>Hora de agir!</td>
-    </tr>
-    <tr>
-        <td><span class="status-risco">Atrasado</span></td>
-        <td>Data do follow-up já passou</td>
-        <td>Ação urgente necessária</td>
-    </tr>
-</table>
-
-<h2>9.6 Visão do Gestor</h2>
-
-<p>O <span class="badge badge-gestor">GESTOR</span> e o <span class="badge badge-admin">ADMIN</span> têm acesso a uma visão especial para monitorar a disciplina comercial do time:</p>
-
-<ol>
-    <li>Acesse <strong>Gestão → Oportunidades sem Follow-up</strong></li>
-    <li>Visualize oportunidades que precisam de atenção</li>
-</ol>
-
-<p>Esta tela mostra:</p>
-<ul>
-    <li>Oportunidades <strong>sem data de follow-up</strong> definida</li>
-    <li>Oportunidades <strong>paradas há muitos dias</strong> sem movimentação</li>
-</ul>
-
-<p>Informações exibidas:</p>
-
-<table>
-    <tr>
-        <th>Coluna</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Cliente</td>
-        <td>Nome do cliente</td>
-    </tr>
-    <tr>
-        <td>Vendedor</td>
-        <td>Responsável pela oportunidade</td>
-    </tr>
-    <tr>
-        <td>Etapa</td>
-        <td>Fase atual no pipeline</td>
-    </tr>
-    <tr>
-        <td>Dias sem Movimentação</td>
-        <td>Há quantos dias a oportunidade não é atualizada</td>
-    </tr>
-</table>
-
-<div class="warning-box">
-    <strong>Atenção Gestores:</strong> Esta visão é apenas para monitoramento. O gestor não pode editar o follow-up das oportunidades. Converse com o vendedor responsável quando identificar oportunidades esquecidas.
-</div>
-
-<h2>9.7 Boas Práticas de Follow-up</h2>
-
-<div class="success-box">
-    <strong>Regra de ouro:</strong> Toda oportunidade ativa deve ter uma próxima ação definida com data.
-</div>
-
-<h3>Para o Vendedor</h3>
-
-<ol>
-    <li><strong>Defina a próxima ação imediatamente</strong> — Ao terminar uma ligação ou reunião, já registre qual será o próximo passo</li>
-    <li><strong>Seja específico</strong> — Em vez de "retornar", escreva "ligar para confirmar se recebeu proposta"</li>
-    <li><strong>Use datas realistas</strong> — Não adiante demais para não esquecer, nem coloque para amanhã sem necessidade</li>
-    <li><strong>Consulte suas pendências diariamente</strong> — Comece o dia verificando a lista de pendências</li>
-    <li><strong>Atualize após cada contato</strong> — Não deixe informações desatualizadas no sistema</li>
-</ol>
-
-<h3>Para o Gestor</h3>
-
-<ol>
-    <li><strong>Monitore semanalmente</strong> — Verifique oportunidades sem follow-up pelo menos uma vez por semana</li>
-    <li><strong>Converse, não persiga</strong> — Use as informações para orientar o vendedor, não para cobrança excessiva</li>
-    <li><strong>Identifique padrões</strong> — Se um vendedor sempre esquece follow-ups, pode ser sinal de sobrecarga ou falta de método</li>
-</ol>
-
-<h2>9.8 Permissões de Follow-up</h2>
-
-<table>
-    <tr>
-        <th>Ação</th>
-        <th>Vendedor</th>
-        <th>Gestor</th>
-        <th>Admin</th>
-    </tr>
-    <tr>
-        <td>Definir próxima ação</td>
-        <td>Sim (suas oportunidades)</td>
-        <td>Não</td>
-        <td>Não</td>
-    </tr>
-    <tr>
-        <td>Definir data de follow-up</td>
-        <td>Sim (suas oportunidades)</td>
-        <td>Não</td>
-        <td>Não</td>
-    </tr>
-    <tr>
-        <td>Ver suas pendências</td>
-        <td>Sim</td>
-        <td>—</td>
-        <td>—</td>
-    </tr>
-    <tr>
-        <td>Ver oportunidades sem follow-up</td>
-        <td>Não</td>
-        <td>Sim</td>
-        <td>Sim</td>
-    </tr>
-</table>
-
-<!-- 10. LEMBRETES E ALERTAS -->
-<h1>10. Lembretes e Alertas</h1>
-
-<p>O Praxis CRM possui um sistema de lembretes para ajudar você a manter a disciplina comercial. O sistema <strong>avisa</strong>, mas <strong>você decide</strong> quando e como agir.</p>
-
-<div class="info-box">
-    <strong>Princípio:</strong> O sistema envia lembretes simples e objetivos. Não há spam, não há automações invasivas. Você recebe apenas o necessário para não esquecer suas pendências.
-</div>
-
-<h2>10.1 Lembrete Visual no Dashboard</h2>
-
-<p>Ao acessar o sistema, o <span class="badge badge-vendedor">VENDEDOR</span> verá um aviso no dashboard quando houver oportunidades com follow-up agendado para o dia:</p>
-
-<div class="warning-box">
-    <strong>Lembrete:</strong> Você possui X oportunidades com follow-up para hoje. <em>Ver pendências</em>
-</div>
-
-<p>Este aviso:</p>
-<ul>
-    <li>Aparece apenas quando há follow-ups para o dia atual</li>
-    <li>Mostra a quantidade de oportunidades pendentes</li>
-    <li>Possui um link direto para a lista de pendências</li>
-    <li>Não bloqueia nenhuma ação no sistema</li>
-</ul>
-
-<h2>10.2 E-mail de Lembrete Diário</h2>
-
-<p>O sistema pode enviar <strong>um único e-mail por dia</strong> para vendedores que possuem follow-ups agendados:</p>
-
-<div class="success-box">
-    <strong>Assunto:</strong> Praxis CRM - Lembrete de Follow-up<br><br>
-    Olá [Nome],<br><br>
-    Você possui X oportunidades com follow-up agendado para hoje.<br><br>
-    Acesse o Praxis CRM para visualizar.<br><br>
-    Atenciosamente,<br>
-    Equipe Praxis CRM
-</div>
-
-<h3>Regras do e-mail:</h3>
-
-<table>
-    <tr>
-        <th>Regra</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Frequência</td>
-        <td>No máximo 1 e-mail por dia</td>
-    </tr>
-    <tr>
-        <td>Condição</td>
-        <td>Apenas se houver follow-up para hoje</td>
-    </tr>
-    <tr>
-        <td>Conteúdo</td>
-        <td>Mensagem curta, sem detalhes comerciais</td>
-    </tr>
-    <tr>
-        <td>Destinatário</td>
-        <td>Apenas o vendedor responsável</td>
-    </tr>
-</table>
-
-<div class="warning-box">
-    <strong>Importante:</strong> Se não houver follow-ups para o dia, você não receberá nenhum e-mail. O sistema não envia mensagens desnecessárias.
-</div>
-
-<h2>10.3 Alerta para o Gestor</h2>
-
-<p>O <span class="badge badge-gestor">GESTOR</span> e o <span class="badge badge-admin">ADMIN</span> veem um alerta no dashboard quando há problemas de disciplina comercial:</p>
-
-<div class="warning-box">
-    <strong>Alerta de Disciplina Comercial:</strong> X oportunidades sem follow-up definido. Y oportunidades paradas há mais de 7 dias. <em>Ver detalhes</em>
-</div>
-
-<p>Este alerta indica:</p>
-<ul>
-    <li>Oportunidades sem data de follow-up definida</li>
-    <li>Oportunidades que não foram atualizadas há muitos dias</li>
-</ul>
-
-<div class="info-box">
-    <strong>Nota:</strong> O gestor não recebe e-mails de lembrete. O alerta é apenas visual, para consulta quando acessar o sistema.
-</div>
-
-<h2>10.4 O que o Sistema NÃO Faz</h2>
-
-<p>É importante saber o que o Praxis CRM <strong>não faz</strong> em relação a lembretes:</p>
-
-<table>
-    <tr>
-        <th>O sistema NÃO...</th>
-        <th>Por quê</th>
-    </tr>
-    <tr>
-        <td>Envia múltiplos e-mails por dia</td>
-        <td>Evitar sobrecarga de mensagens</td>
-    </tr>
-    <tr>
-        <td>Envia WhatsApp ou SMS</td>
-        <td>Manter a comunicação simples e não invasiva</td>
-    </tr>
-    <tr>
-        <td>Altera etapas automaticamente</td>
-        <td>Decisões comerciais são suas</td>
-    </tr>
-    <tr>
-        <td>Move ou arquiva oportunidades</td>
-        <td>Você mantém o controle total</td>
-    </tr>
-    <tr>
-        <td>Envia e-mails para clientes</td>
-        <td>Lembretes são apenas internos</td>
-    </tr>
-</table>
-
-<h2>10.5 Boas Práticas</h2>
-
-<h3>Para o Vendedor</h3>
-
-<ol>
-    <li><strong>Verifique o dashboard diariamente</strong> — O lembrete visual está lá para ajudar</li>
-    <li><strong>Mantenha follow-up sempre preenchido</strong> — Toda oportunidade ativa deve ter uma próxima ação</li>
-    <li><strong>Configure seu e-mail corretamente</strong> — Certifique-se de que seu e-mail no sistema está atualizado</li>
-    <li><strong>Não ignore os lembretes</strong> — Eles existem para ajudar, não para incomodar</li>
-</ol>
-
-<h3>Para o Gestor</h3>
-
-<ol>
-    <li><strong>Monitore o alerta de disciplina</strong> — Use-o para identificar oportunidades esquecidas</li>
-    <li><strong>Oriente a equipe</strong> — Se muitas oportunidades estão sem follow-up, pode ser hora de uma conversa</li>
-    <li><strong>Não use para cobrança excessiva</strong> — O objetivo é ajudar, não pressionar</li>
-</ol>
-
-<h2>10.6 Quem Recebe o Quê</h2>
-
-<table>
-    <tr>
-        <th>Tipo de Lembrete</th>
-        <th>Vendedor</th>
-        <th>Gestor</th>
-        <th>Admin</th>
-    </tr>
-    <tr>
-        <td>Lembrete visual no dashboard</td>
-        <td>Sim</td>
-        <td>Não</td>
-        <td>Não</td>
-    </tr>
-    <tr>
-        <td>E-mail de follow-up</td>
-        <td>Sim</td>
-        <td>Não</td>
-        <td>Não</td>
-    </tr>
-    <tr>
-        <td>Alerta de disciplina comercial</td>
-        <td>Não</td>
-        <td>Sim</td>
-        <td>Sim</td>
-    </tr>
-</table>
-
-<!-- 11. FILTROS E BUSCA -->
-<h1>11. Filtros e Busca</h1>
-
-<p>As listas de Oportunidades, Interações e Clientes possuem filtros para ajudar você a localizar informações rapidamente, especialmente quando o volume de registros cresce.</p>
-
-<h2>11.1 Filtros de Oportunidades</h2>
-
-<p>Na lista de Oportunidades (<strong>Oportunidades</strong> no menu), você encontra um card de filtros acima da tabela com as seguintes opções:</p>
-
-<table>
-    <tr>
-        <th>Filtro</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td><strong>Cliente</strong></td>
-        <td>Selecione um cliente para ver apenas suas oportunidades</td>
-    </tr>
-    <tr>
-        <td><strong>Data inicial</strong></td>
-        <td>Mostra oportunidades criadas a partir desta data</td>
-    </tr>
-    <tr>
-        <td><strong>Data final</strong></td>
-        <td>Mostra oportunidades criadas até esta data</td>
-    </tr>
-</table>
-
-<p>Clique em <strong>Filtrar</strong> para aplicar. Use <strong>Limpar</strong> para remover todos os filtros e voltar à lista completa.</p>
-
-<div class="info-box">
-    <strong>Dica:</strong> Você pode combinar os filtros. Por exemplo, selecione um cliente E um período para ver apenas as oportunidades daquele cliente naquele intervalo de datas.
-</div>
-
-<h2>11.2 Filtros de Interações</h2>
-
-<p>Na lista de Interações (<strong>Interações</strong> no menu), os mesmos filtros estão disponíveis:</p>
-
-<ul>
-    <li><strong>Cliente:</strong> Filtra interações vinculadas a oportunidades do cliente selecionado</li>
-    <li><strong>Data inicial / Data final:</strong> Filtra pelo período de criação da interação</li>
-</ul>
-
-<h2>11.3 Busca de Clientes</h2>
-
-<p>Na lista de Clientes (<strong>Clientes</strong> no menu), há um campo de busca por nome:</p>
-
-<ol>
-    <li>Digite parte do nome do cliente no campo de busca</li>
-    <li>Clique em <strong>Buscar</strong></li>
-    <li>A lista mostrará apenas os clientes cujo nome contém o texto digitado</li>
-</ol>
-
-<div class="info-box">
-    <strong>Dica:</strong> A busca não diferencia maiúsculas de minúsculas. Digitando "silva", você encontrará "Silva", "SILVA" e "Da Silva".
-</div>
-
-<h2>11.4 Filtros e Paginação</h2>
-
-<p>Quando você aplica filtros e a lista filtrada possui mais de uma página, os filtros são preservados ao navegar entre as páginas. Você não precisa reaplicá-los a cada página.</p>
-
-<h2>11.5 Visibilidade dos Filtros</h2>
-
-<table>
-    <tr>
-        <th>Perfil</th>
-        <th>Clientes no dropdown</th>
-    </tr>
-    <tr>
-        <td><span class="badge badge-vendedor">VENDEDOR</span></td>
-        <td>Apenas seus próprios clientes</td>
-    </tr>
-    <tr>
-        <td><span class="badge badge-gestor">GESTOR</span></td>
-        <td>Todos os clientes</td>
-    </tr>
-    <tr>
-        <td><span class="badge badge-admin">ADMIN</span></td>
-        <td>Todos os clientes</td>
-    </tr>
-</table>
-
-<h2>11.6 Quando Usar Cada Filtro</h2>
-
-<div class="success-box">
-    <strong>Filtro por cliente:</strong> Use quando quiser ver o histórico completo de um cliente específico — todas as oportunidades ou interações associadas a ele.
-</div>
-
-<div class="success-box">
-    <strong>Filtro por período:</strong> Use quando quiser analisar um intervalo de tempo — por exemplo, oportunidades criadas no último mês ou interações da semana passada.
-</div>
-
-<!-- 12. SUSTENTAÇÃO DA DISCIPLINA (ETAPA 5) -->
-<h1>12. Sustentação da Disciplina (Etapa 5)</h1>
-
-<p>A Etapa 5 do Praxis CRM reúne funcionalidades que ajudam a manter a <strong>disciplina comercial</strong> no dia a dia. O objetivo é simples: garantir que nenhuma oportunidade seja esquecida e que o vendedor tenha ferramentas práticas para organizar seu trabalho.</p>
-
-<div class="info-box">
-    <strong>Princípio da Etapa 5:</strong> O sistema ajuda, mas não atrapalha. Os lembretes são discretos, os filtros são opcionais, e nenhuma automação substitui a decisão do vendedor.
-</div>
-
-<h2>12.1 Lembrete Visual</h2>
-
-<p>Ao entrar no sistema, o <span class="badge badge-vendedor">VENDEDOR</span> verá um card discreto no dashboard quando houver oportunidades com follow-up vencido:</p>
-
-<div class="warning-box">
-    Você tem <strong>X</strong> oportunidades com follow-up vencido. <em>Ver pendências</em>
-</div>
-
-<p>Características do lembrete:</p>
-
-<ul>
-    <li>Aparece <strong>apenas</strong> quando há follow-ups com data passada (vencidos)</li>
-    <li>Mostra a quantidade exata de oportunidades pendentes</li>
-    <li>Possui link direto para a lista de pendências</li>
-    <li>Não bloqueia nenhuma ação — é apenas informativo</li>
-    <li>Desaparece automaticamente quando não há mais pendências</li>
-</ul>
-
-<p>Além do lembrete de vencidos, o sistema também exibe um aviso separado para follow-ups agendados <strong>para o dia atual</strong>, ajudando o vendedor a priorizar suas ações.</p>
-
-<h2>12.2 Lembrete por E-mail</h2>
-
-<p>O sistema envia <strong>um único e-mail por dia</strong> para vendedores que possuem follow-ups agendados:</p>
-
-<table>
-    <tr>
-        <th>Característica</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Frequência</td>
-        <td>No máximo 1 e-mail por vendedor por dia</td>
-    </tr>
-    <tr>
-        <td>Condição</td>
-        <td>Apenas se houver follow-up agendado para o dia</td>
-    </tr>
-    <tr>
-        <td>Conteúdo</td>
-        <td>Mensagem curta informando a quantidade de pendências</td>
-    </tr>
-    <tr>
-        <td>Destinatário</td>
-        <td>Apenas o vendedor responsável</td>
-    </tr>
-</table>
-
-<div class="info-box">
-    <strong>Importante:</strong> O e-mail não contém detalhes comerciais sensíveis. É apenas um lembrete para que o vendedor acesse o sistema e verifique suas pendências.
-</div>
-
-<h2>12.3 Filtros nas Listas</h2>
-
-<p>As listas de Oportunidades e Interações possuem filtros por <strong>Cliente</strong> e <strong>Período</strong> (data inicial e data final). A lista de Clientes possui busca por <strong>Nome</strong>.</p>
-
-<p>Os filtros utilizam parâmetros GET na URL, o que significa que:</p>
-
-<ul>
-    <li>Os filtros são preservados ao navegar entre páginas</li>
-    <li>Os filtros são mantidos ao voltar de uma ação (editar, visualizar)</li>
-    <li>É possível compartilhar uma URL filtrada com outro usuário</li>
-</ul>
-
-<p>Para mais detalhes sobre cada filtro, consulte a seção <strong>11. Filtros e Busca</strong>.</p>
-
-<h2>12.4 Objetivo da Etapa</h2>
-
-<p>A Etapa 5 não adiciona funcionalidades complexas. Ela conecta recursos existentes para criar um ciclo de sustentação:</p>
-
 <div class="flow">
-Vendedor entra no sistema
-    → Vê lembrete visual de follow-ups vencidos
-    → Acessa lista de pendências
-    → Usa filtros para localizar oportunidades
-    → Atualiza follow-ups
-    → Ciclo se repete no próximo acesso
+Prospecção → Qualificação → Proposta → Negociação → Fechamento
 </div>
 
-<div class="success-box">
-    <strong>Resultado esperado:</strong> Com o uso diário do lembrete visual, dos e-mails e dos filtros, o vendedor mantém todas as oportunidades em movimento, sem depender de memória ou controles externos.
-</div>
+<!-- 9. METAS COMERCIAIS -->
+<h1>9. Metas Comerciais</h1>
+<p>As metas são definidas mensalmente e acompanham o desempenho do vendedor e do time.</p>
 
-<!-- 13. QUALIDADE DE DADOS & LEITURA INTELIGENTE (ETAPA 6) -->
-<h1>13. Qualidade de Dados & Leitura Inteligente (Etapa 6)</h1>
+<!-- 10. FOLLOW-UP E DISCIPLINA COMERCIAL -->
+<h1>10. Follow-up e Disciplina Comercial</h1>
+<p>Follow-up é o acompanhamento sistemático das oportunidades para manter o pipeline em movimento.</p>
 
-<p>A Etapa 6 do Praxis CRM foca em melhorar a <strong>qualidade dos dados</strong> e facilitar a <strong>leitura inteligente</strong> das informações. O objetivo é ajudar a equipe a tomar decisões mais rápidas e embasadas, sem adicionar burocracia.</p>
+<!-- 11. LEMBRETES E ALERTAS -->
+<h1>11. Lembretes e Alertas</h1>
+<p>O sistema pode exibir lembretes visuais (e, se configurado, enviar e-mails) para apoiar disciplina comercial.</p>
 
-<div class="info-box">
-    <strong>Princípio da Etapa 6:</strong> Dados de qualidade geram decisões melhores. O sistema guia, não bloqueia. Insights são para aprendizado, não para punição.
-</div>
+<!-- 12. FILTROS E BUSCA -->
+<h1>12. Filtros e Busca</h1>
+<p>As listas possuem filtros e busca para facilitar navegação quando o volume de registros cresce.</p>
 
-<h2>13.1 Motivo de Perda</h2>
-
-<p>Ao marcar uma oportunidade como perdida, o vendedor agora deve informar o <strong>motivo da perda</strong>. Isso permite que a equipe analise os padrões e tome ações corretivas.</p>
-
-<p><strong>Como funciona:</strong></p>
-
-<ol>
-    <li>Na tela de detalhes da oportunidade, clique em <strong>Marcar como perdida</strong></li>
-    <li>O sistema abrirá um formulário pedindo o motivo</li>
-    <li>Selecione o motivo principal e confirme</li>
-</ol>
-
-<p>Motivos disponíveis:</p>
-
-<table>
-    <tr>
-        <th>Motivo</th>
-        <th>Quando usar</th>
-    </tr>
-    <tr>
-        <td>Preço</td>
-        <td>Cliente achou caro ou obteve preço melhor</td>
-    </tr>
-    <tr>
-        <td>Prazo</td>
-        <td>Não foi possível atender o prazo do cliente</td>
-    </tr>
-    <tr>
-        <td>Concorrência</td>
-        <td>Cliente fechou com outro fornecedor</td>
-    </tr>
-    <tr>
-        <td>Desistência</td>
-        <td>Cliente desistiu da compra</td>
-    </tr>
-    <tr>
-        <td>Sem retorno</td>
-        <td>Cliente parou de responder</td>
-    </tr>
-    <tr>
-        <td>Outro</td>
-        <td>Motivo não listado acima</td>
-    </tr>
-</table>
-
-<div class="info-box">
-    <strong>Por que informar o motivo?</strong> Ao acumular dados de perdas, o gestor consegue identificar padrões. Se muitas oportunidades são perdidas por preço, pode ser hora de revisar a política comercial. Se muitas são perdidas por "sem retorno", pode indicar falha no follow-up.
-</div>
-
-<h2>13.2 Aviso de Duplicidade</h2>
-
-<p>Ao cadastrar um novo cliente, o sistema verifica se já existe um cliente com nome ou CNPJ/CPF semelhante. Se encontrar, exibe um <strong>aviso amarelo</strong> listando os possíveis duplicados.</p>
-
-<p><strong>Comportamento:</strong></p>
-
-<ul>
-    <li>O aviso <strong>não bloqueia</strong> o cadastro</li>
-    <li>O vendedor pode revisar os duplicados e decidir se deseja continuar</li>
-    <li>Para confirmar, basta clicar em <strong>Salvar mesmo assim</strong></li>
-    <li>Se não houver duplicados, o formulário funciona normalmente</li>
-</ul>
-
-<div class="warning-box">
-    <strong>Atenção:</strong> Este aviso é preventivo. Cadastros duplicados dificultam a análise de dados e podem gerar confusão nas oportunidades. Sempre verifique antes de confirmar.
-</div>
-
-<h2>13.3 Tempo Médio por Etapa</h2>
-
-<p>No dashboard do gestor, uma nova tabela mostra quanto tempo, em média, as oportunidades ficam em cada etapa do pipeline.</p>
-
-<table>
-    <tr>
-        <th>Coluna</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Etapa</td>
-        <td>Nome da etapa do pipeline</td>
-    </tr>
-    <tr>
-        <td>Tempo Médio (dias)</td>
-        <td>Média de dias que as oportunidades ficam na etapa</td>
-    </tr>
-    <tr>
-        <td>Registros</td>
-        <td>Quantidade de oportunidades usadas no cálculo</td>
-    </tr>
-</table>
-
-<div class="success-box">
-    <strong>Como interpretar:</strong> Se uma etapa tem tempo médio muito alto, pode indicar um gargalo no processo. Por exemplo, se oportunidades ficam paradas na "Proposta" por muitos dias, pode ser necessário agilizar a elaboração de propostas.
-</div>
-
-<h2>13.4 Insights do Dashboard</h2>
-
-<p>O dashboard do gestor agora exibe <strong>três insights automáticos</strong> baseados nos dados do CRM:</p>
-
-<table>
-    <tr>
-        <th>Insight</th>
-        <th>O que mostra</th>
-        <th>Para quem</th>
-    </tr>
-    <tr>
-        <td>Etapa com mais perdas</td>
-        <td>Em qual etapa do pipeline as oportunidades mais são perdidas</td>
-        <td><span class="badge badge-gestor">GESTOR</span> <span class="badge badge-admin">ADMIN</span></td>
-    </tr>
-    <tr>
-        <td>Cobertura de pipeline</td>
-        <td>Quanto do pipeline cobre a meta total do mês</td>
-        <td><span class="badge badge-gestor">GESTOR</span> <span class="badge badge-admin">ADMIN</span></td>
-    </tr>
-    <tr>
-        <td>Dias médio parado</td>
-        <td>Há quantos dias, em média, as oportunidades abertas estão sem movimentação</td>
-        <td><span class="badge badge-gestor">GESTOR</span> <span class="badge badge-admin">ADMIN</span></td>
-    </tr>
-</table>
-
-<div class="info-box">
-    <strong>Nota:</strong> Os insights são calculados automaticamente a partir dos dados do sistema. Eles aparecem apenas quando há dados suficientes para gerar a informação.
-</div>
-
-<h2>13.5 Objetivo da Etapa</h2>
-
-<p>A Etapa 6 existe para <strong>melhorar a qualidade da informação</strong> no CRM, sem adicionar burocracia. O ciclo é:</p>
-
-<div class="flow">
-Vendedor marca perda com motivo
-    → Gestor vê padrões de perda nos insights
-    → Equipe identifica pontos de melhoria
-    → Ações corretivas são tomadas
-    → Taxas de conversão melhoram
-</div>
-
-<div class="success-box">
-    <strong>Importante:</strong> Os insights são para <strong>aprendizado</strong>, não para punição. O objetivo é entender onde o processo pode melhorar, não apontar culpados. Use os dados para orientar, treinar e desenvolver a equipe.
-</div>
+<!-- 13. MÓDULO DE PROSPECÇÃO -->
+<section id="prospeccao">
+<h1>13. Módulo de Prospecção</h1>
+<p>O módulo de Prospecção cuida dos leads antes de virarem clientes do CRM.</p>
+</section>
 
 <!-- 14. PERGUNTAS FREQUENTES -->
 <h1>14. Perguntas Frequentes</h1>
 
-<h3>Por que não consigo ver os clientes de outros vendedores?</h3>
-<p>Por segurança, cada vendedor vê apenas seus próprios clientes e oportunidades. Gestores e admins podem ver todos os dados.</p>
+<h3>Cadastrei um cliente e ele não apareceu na Carteira Ativa. Por quê?</h3>
+<p>Verifique se você está logado no usuário correto (o criador do cliente) e se o cliente não foi criado por outra pessoa. A Carteira Ativa inclui clientes <strong>Ativos e Provisórios</strong>, então status não deve impedir a exibição.</p>
 
-<h3>Por que não consigo ativar um cliente?</h3>
-<p>Apenas administradores podem ativar clientes. Além disso, o cliente precisa ter o CNPJ/CPF preenchido.</p>
+<h3>Onde cadastro o cliente: CRM ou Carteira Ativa?</h3>
+<p>O cadastro é no <strong>CRM</strong>. A Carteira Ativa é só acompanhamento e fila de contato.</p>
 
-<h3>Como marco uma oportunidade como perdida?</h3>
-<p>Na tela de detalhes da oportunidade, clique em <strong>Marcar como Perdida</strong>. O sistema pedirá o motivo da perda antes de confirmar.</p>
-
-<h3>Posso editar uma meta depois de criada?</h3>
-<p>Sim, o administrador pode editar metas no Django Admin.</p>
-
-<h3>O que acontece se eu tentar criar uma meta duplicada?</h3>
-<p>O sistema não permite duas metas para o mesmo vendedor no mesmo mês/ano.</p>
-
-<h3>Como sou notificado sobre minha meta?</h3>
-<p>Acesse a tela <strong>Minha Meta</strong> regularmente para acompanhar seu progresso. O status (OK, Atenção, Risco) indica sua situação.</p>
-
-<h3>O que acontece se eu não definir um follow-up?</h3>
-<p>A oportunidade ficará visível na tela "Oportunidades sem Follow-up" do gestor. Isso pode indicar falta de disciplina comercial. Sempre defina a próxima ação para manter suas oportunidades em movimento.</p>
-
-<h3>Por que não consigo editar o follow-up de uma oportunidade?</h3>
-<p>Apenas o vendedor responsável pela oportunidade pode editar o follow-up. Gestores e admins podem apenas visualizar.</p>
-
-<h3>Como vejo minhas pendências de follow-up?</h3>
-<p>Acesse <strong>Minhas Pendências</strong> no menu. A lista mostra todas as oportunidades com follow-up atrasado ou para hoje, ordenadas por prioridade.</p>
-
-<h3>Por que não recebi o e-mail de lembrete?</h3>
-<p>O e-mail só é enviado se você tiver oportunidades com follow-up para o dia atual. Se não houver nenhuma, você não receberá e-mail. Verifique também se seu e-mail está cadastrado corretamente no sistema.</p>
-
-<h3>Posso desativar os lembretes por e-mail?</h3>
-<p>O envio de e-mails é gerenciado pelo administrador do sistema. Converse com ele se precisar ajustar as configurações.</p>
-
-<h3>O sistema envia e-mails para meus clientes?</h3>
-<p>Não. Os lembretes são apenas internos, enviados para você (vendedor). O sistema nunca envia e-mails para clientes.</p>
-
-<!-- 12. MÓDULO DE PROSPECÇÃO -->
-<section id="prospeccao">
-
-<h1>12. Módulo de Prospecção</h1>
-
-<h2>12.1 O que é Prospecção</h2>
-
-<p>O módulo de Prospecção é a etapa <strong>anterior ao CRM</strong>. Enquanto o CRM gerencia clientes já cadastrados e oportunidades de vendas, a Prospecção cuida dos <strong>leads</strong> — pessoas ou empresas que demonstraram algum interesse, mas que ainda não se tornaram clientes.</p>
-
-<div class="info-box">
-    <strong>Resumo:</strong> A Prospecção é o "funil de entrada" do sistema. Nela, você registra contatos iniciais, acompanha tentativas de abordagem e, quando o lead fechar negócio, ele pode ser convertido em cliente no CRM.
-</div>
-
-<p>Principais benefícios:</p>
-<ul>
-    <li>Centralizar todos os leads em um só lugar</li>
-    <li>Registrar cada tentativa de contato (ligação, WhatsApp, e-mail, visita)</li>
-    <li>Acompanhar automaticamente o status de cada lead</li>
-    <li>Receber lembretes de follow-up para não esquecer nenhum lead</li>
-    <li>Ter visão clara de quantos leads estão em cada fase</li>
-</ul>
-
-<h2>12.2 Fluxo de Trabalho</h2>
-
-<p>O fluxo de prospecção segue uma sequência simples e intuitiva:</p>
-
-<div class="flow">
-1. Cadastrar Lead
-      ↓
-2. Registrar Contato (ligação, WhatsApp, e-mail, visita)
-      ↓
-3. Sistema atualiza status automaticamente
-      ↓
-4. Agendar próximo contato (follow-up)
-      ↓
-5. Repetir até o lead fechar ou ser descartado
-</div>
-
-<div class="info-box">
-    <strong>Importante:</strong> Você não precisa alterar o status do lead manualmente. O sistema faz isso automaticamente com base no resultado de cada contato registrado.
-</div>
-
-<h2>12.3 Cadastro de Lead</h2>
-
-<p>Para cadastrar um novo lead:</p>
-
-<ol>
-    <li>No menu superior, clique em <strong>Prospecção → Leads</strong></li>
-    <li>Clique em <strong>Novo lead</strong></li>
-    <li>Preencha os dados:
-        <ul>
-            <li><strong>Nome:</strong> Nome da pessoa ou contato (obrigatório)</li>
-            <li><strong>Empresa:</strong> Empresa do lead (opcional)</li>
-            <li><strong>Telefone:</strong> Telefone principal (obrigatório)</li>
-            <li><strong>WhatsApp:</strong> Número do WhatsApp (opcional)</li>
-            <li><strong>E-mail:</strong> E-mail de contato (opcional)</li>
-            <li><strong>Origem:</strong> De onde veio esse lead (obrigatório) — ex: Instagram, Google, Indicação, Loja Física</li>
-            <li><strong>Produto de interesse:</strong> O que o lead demonstrou interesse (opcional)</li>
-            <li><strong>Observações:</strong> Qualquer informação adicional (opcional)</li>
-        </ul>
-    </li>
-    <li>Clique em <strong>Salvar</strong></li>
-</ol>
-
-<div class="success-box">
-    <strong>Dica:</strong> Cadastre o lead assim que receber o contato. Quanto mais rápido registrar, menor a chance de esquecer detalhes importantes.
-</div>
-
-<h2>12.4 Registro de Contato</h2>
-
-<p>Toda vez que você tentar falar com um lead — com sucesso ou não — registre o contato:</p>
-
-<ol>
-    <li>Acesse o lead na lista de leads</li>
-    <li>Na tela de detalhes, clique em <strong>Registrar Contato</strong></li>
-    <li>Preencha:
-        <ul>
-            <li><strong>Tipo de contato:</strong> Como foi o contato</li>
-            <li><strong>Resultado:</strong> O que aconteceu</li>
-            <li><strong>Observação:</strong> Detalhes do que foi conversado (opcional)</li>
-            <li><strong>Data do próximo contato:</strong> Quando retornar (opcional)</li>
-        </ul>
-    </li>
-    <li>Clique em <strong>Salvar</strong></li>
-</ol>
-
-<h3>Tipos de contato disponíveis</h3>
-
-<table>
-    <tr>
-        <th>Tipo</th>
-        <th>Quando usar</th>
-    </tr>
-    <tr>
-        <td>Ligação</td>
-        <td>Chamada telefônica realizada</td>
-    </tr>
-    <tr>
-        <td>WhatsApp</td>
-        <td>Mensagem enviada ou conversa via WhatsApp</td>
-    </tr>
-    <tr>
-        <td>Presencial</td>
-        <td>Visita à loja, reunião presencial ou encontro</td>
-    </tr>
-    <tr>
-        <td>E-mail</td>
-        <td>E-mail enviado ao lead</td>
-    </tr>
-</table>
-
-<h3>Resultados possíveis</h3>
-
-<table>
-    <tr>
-        <th>Resultado</th>
-        <th>Significado</th>
-        <th>Exemplo</th>
-    </tr>
-    <tr>
-        <td>Não atendeu</td>
-        <td>Tentou contato, mas não conseguiu falar</td>
-        <td>Chamou e caiu na caixa postal</td>
-    </tr>
-    <tr>
-        <td>Pediu retorno</td>
-        <td>Falou com o lead, mas ele pediu para retornar depois</td>
-        <td>"Me liga na semana que vem"</td>
-    </tr>
-    <tr>
-        <td>Interessado</td>
-        <td>Lead demonstrou interesse e quer seguir em frente</td>
-        <td>"Me manda a proposta por e-mail"</td>
-    </tr>
-    <tr>
-        <td>Sem interesse</td>
-        <td>Lead disse que não quer prosseguir</td>
-        <td>"Não preciso disso no momento"</td>
-    </tr>
-    <tr>
-        <td>Fechou</td>
-        <td>Lead confirmou que quer fechar negócio</td>
-        <td>"Vamos fechar, pode emitir o pedido"</td>
-    </tr>
-</table>
-
-<div class="warning-box">
-    <strong>Importante:</strong> Registre o contato mesmo quando não conseguir falar com o lead. O registro de "Não atendeu" é valioso para saber quantas tentativas foram feitas.
-</div>
-
-<h2>12.5 Status do Lead</h2>
-
-<p>O status do lead é <strong>atualizado automaticamente</strong> pelo sistema cada vez que você registra um contato. Você não precisa alterar o status manualmente.</p>
-
-<table>
-    <tr>
-        <th>Status</th>
-        <th>Significado</th>
-        <th>Quando acontece</th>
-    </tr>
-    <tr>
-        <td><span class="status-ok">Novo</span></td>
-        <td>Lead recém-cadastrado, sem nenhum contato</td>
-        <td>Ao criar o lead</td>
-    </tr>
-    <tr>
-        <td><span class="status-ok">Em contato</span></td>
-        <td>Já houve tentativa de contato com o lead</td>
-        <td>Após resultado "Não atendeu" ou "Interessado"</td>
-    </tr>
-    <tr>
-        <td><span class="status-atencao">Aguardando</span></td>
-        <td>Lead pediu para retornar depois</td>
-        <td>Após resultado "Pediu retorno"</td>
-    </tr>
-    <tr>
-        <td><span class="status-ok">Convertido</span></td>
-        <td>Lead fechou negócio e virou cliente</td>
-        <td>Após resultado "Fechou"</td>
-    </tr>
-    <tr>
-        <td><span class="status-risco">Perdido</span></td>
-        <td>Lead não tem interesse, descartado</td>
-        <td>Após resultado "Sem interesse"</td>
-    </tr>
-</table>
-
-<div class="info-box">
-    <strong>Como funciona:</strong> O sistema lê o resultado do contato e atualiza o status do lead automaticamente. Por exemplo, se você registrar um contato com resultado "Pediu retorno", o lead muda para status "Aguardando". Se registrar "Fechou", o lead muda para "Convertido" e a data de conversão é preenchida.
-</div>
-
-<h2>12.6 Follow-ups de Prospecção</h2>
-
-<p>O follow-up de prospecção garante que você não esqueça de retornar para nenhum lead. Ao registrar um contato, você pode definir a <strong>data do próximo contato</strong>.</p>
-
-<h3>Como funciona</h3>
-
-<ol>
-    <li>Ao registrar um contato, preencha o campo <strong>Data do próximo contato</strong></li>
-    <li>O sistema cria automaticamente um lembrete de follow-up para aquela data</li>
-    <li>Se o lead já tinha um follow-up pendente, o anterior é cancelado e substituído pelo novo</li>
-    <li>No dia marcado, o follow-up aparece na tela <strong>Follow-ups Hoje</strong></li>
-</ol>
-
-<h3>Acessando os follow-ups</h3>
-
-<p>No menu superior, clique em <strong>Prospecção → Follow-ups Hoje</strong>. Esta tela mostra:</p>
-
-<table>
-    <tr>
-        <th>Coluna</th>
-        <th>Descrição</th>
-    </tr>
-    <tr>
-        <td>Lead</td>
-        <td>Nome do lead (clicável para ver detalhes)</td>
-    </tr>
-    <tr>
-        <td>Data</td>
-        <td>Data agendada para o retorno</td>
-    </tr>
-    <tr>
-        <td>Descrição</td>
-        <td>Resumo automático do que motivou o follow-up</td>
-    </tr>
-    <tr>
-        <td>Status do Lead</td>
-        <td>Status atual do lead</td>
-    </tr>
-    <tr>
-        <td>Ações</td>
-        <td>Botão para registrar contato diretamente</td>
-    </tr>
-</table>
-
-<div class="warning-box">
-    <strong>Atenção:</strong> Follow-ups atrasados (data já passou) também aparecem nesta tela, destacados em vermelho. Priorize esses contatos, pois quanto mais tempo passa, menor a chance de conversão.
-</div>
-
-<h3>Badge de notificação</h3>
-
-<p>No menu superior, o item <strong>Prospecção</strong> exibe um <strong>contador vermelho</strong> quando há follow-ups pendentes (para hoje ou atrasados). Esse contador atualiza automaticamente conforme você registra contatos e completa seus follow-ups.</p>
-
-<h3>Status do follow-up</h3>
-
-<table>
-    <tr>
-        <th>Status</th>
-        <th>Significado</th>
-    </tr>
-    <tr>
-        <td>Pendente</td>
-        <td>Ainda precisa ser realizado</td>
-    </tr>
-    <tr>
-        <td>Concluído</td>
-        <td>Contato foi realizado</td>
-    </tr>
-    <tr>
-        <td>Cancelado</td>
-        <td>Substituído por um follow-up mais recente</td>
-    </tr>
-</table>
-
-<h2>12.7 Conversão para CRM</h2>
-
-<p>Quando um lead fecha negócio, o fluxo é o seguinte:</p>
-
-<ol>
-    <li>Registre um contato com resultado <strong>Fechou</strong></li>
-    <li>O sistema automaticamente:
-        <ul>
-            <li>Altera o status do lead para <strong>Convertido</strong></li>
-            <li>Registra a data de conversão</li>
-        </ul>
-    </li>
-    <li>Em seguida, cadastre o lead como <strong>cliente no CRM</strong> (menu Clientes → Novo Cliente)</li>
-    <li>Crie uma <strong>oportunidade</strong> para dar continuidade no pipeline de vendas</li>
-</ol>
-
-<div class="success-box">
-    <strong>Resumo do fluxo completo:</strong> O lead entra pela Prospecção, é trabalhado com contatos e follow-ups, e quando fecha negócio, é cadastrado como cliente no CRM para acompanhamento da venda pelo pipeline.
-</div>
-
-<h2>12.8 Perguntas Frequentes sobre Prospecção</h2>
-
-<h3>Preciso alterar o status do lead manualmente?</h3>
-<p>Não. O status é atualizado automaticamente cada vez que você registra um contato. Basta informar o resultado e o sistema cuida do resto.</p>
-
-<h3>Posso registrar um contato mesmo se não consegui falar com o lead?</h3>
-<p>Sim, e você deve. Selecione o resultado "Não atendeu". Isso mantém o histórico completo de tentativas.</p>
-
-<h3>O que acontece se eu esquecer de preencher a data do próximo contato?</h3>
-<p>Nenhum follow-up será criado. O contato será registrado normalmente, mas você não receberá lembrete de retorno. Recomendamos sempre preencher quando houver necessidade de retorno.</p>
-
-<h3>Posso ter mais de um follow-up pendente para o mesmo lead?</h3>
-<p>Não. Quando você agenda um novo follow-up, o anterior é cancelado automaticamente. Isso evita confusão e garante que apenas o mais recente esteja ativo.</p>
-
-<h3>Um lead convertido precisa ser cadastrado como cliente?</h3>
-<p>Sim. A conversão na Prospecção apenas marca que o lead fechou negócio. Para acompanhar a venda pelo pipeline, cadastre-o como cliente no CRM (menu Clientes → Novo Cliente).</p>
-
-<h3>Posso editar um lead após o cadastro?</h3>
-<p>Sim. Na lista de leads, clique no nome do lead e depois em <strong>Editar</strong>. Você pode alterar qualquer informação, incluindo o status.</p>
-
-<h3>Como sei quantos leads tenho pendentes para hoje?</h3>
-<p>O menu <strong>Prospecção</strong> na barra de navegação exibe um contador vermelho com a quantidade de follow-ups pendentes. Clique em <strong>Follow-ups Hoje</strong> para ver a lista completa.</p>
-
-</section>
+<h3>O que significa “Sem contato”?</h3>
+<p>Significa que o cliente foi cadastrado, mas ainda não teve nenhum contato registrado na Carteira. Ele aparece no topo para ser priorizado.</p>
 
 <hr style="margin: 50px 0; border: none; border-top: 1px solid #ddd;">
 
 <p style="text-align: center; color: #95a5a6;">
-    <strong>Praxis CRM</strong> — Manual do Usuário v4.0<br>
+    <strong>Praxis CRM</strong> — Manual do Usuário v5.0<br>
     Desenvolvido com Django 5.x
 </p>
 

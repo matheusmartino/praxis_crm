@@ -1,0 +1,46 @@
+name: Deploy Praxis DEV
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚀 Deploy DEV via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+
+            echo "🚀 Iniciando deploy DEV..."
+
+            cd /home/app/dev/app
+
+            echo "🔄 Atualizando código DEV..."
+            git fetch --all
+            git reset --hard origin/dev
+
+            echo "🐍 Ativando venv DEV..."
+            source /home/app/dev/venv/bin/activate
+
+            echo "📦 Instalando dependências DEV..."
+            pip install -r requirements.txt
+
+            echo "🗄 Rodando migrations DEV..."
+            python manage.py migrate --noinput
+
+            echo "🗂 Coletando static DEV..."
+            python manage.py collectstatic --noinput
+
+            echo "🔁 Restart service DEV..."
+            sudo systemctl restart gunicorn-dev
+
+            echo "✅ Deploy DEV finalizado"

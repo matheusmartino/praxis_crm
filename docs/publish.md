@@ -307,6 +307,224 @@ Permitir apenas o comando necessário.
 
 ---
 
+# 🔐 8️⃣ Configuração HTTPS (Let's Encrypt + Certbot)
+
+## 📌 Domínio oficial
+
+```
+praxisapp.com.br
+www.praxisapp.com.br
+```
+
+---
+
+## 8.1 Ajustar server_name no Nginx
+
+Arquivo:
+
+```bash
+sudo nano /etc/nginx/sites-available/praxis
+```
+
+Atualizar:
+
+```nginx
+server {
+    listen 80;
+    server_name praxisapp.com.br www.praxisapp.com.br;
+
+    location /static/ {
+        root /home/praxis/praxis_crm;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/praxis/praxis_crm/praxis.sock;
+    }
+}
+```
+
+Testar:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+---
+
+## 8.2 Instalar Certbot
+
+```bash
+sudo apt install certbot python3-certbot-nginx -y
+```
+
+---
+
+## 8.3 Gerar certificado SSL
+
+```bash
+sudo certbot --nginx -d praxisapp.com.br -d www.praxisapp.com.br
+```
+
+Resultado:
+
+```
+Certificate saved at:
+ /etc/letsencrypt/live/praxisapp.com.br/fullchain.pem
+Key saved at:
+ /etc/letsencrypt/live/praxisapp.com.br/privkey.pem
+```
+
+Certbot automaticamente:
+
+- Criou bloco SSL 443
+- Configurou redirecionamento HTTP → HTTPS
+- Instalou renovação automática via systemd timer
+
+---
+
+## 8.4 Estrutura final do Nginx (produção)
+
+Após Certbot:
+
+```nginx
+server {
+    server_name praxisapp.com.br www.praxisapp.com.br;
+
+    location /static/ {
+        root /home/praxis/praxis_crm;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/praxis/praxis_crm/praxis.sock;
+    }
+
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/praxisapp.com.br/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/praxisapp.com.br/privkey.pem;
+}
+
+server {
+    listen 80;
+    server_name praxisapp.com.br www.praxisapp.com.br;
+    return 301 https://$host$request_uri;
+}
+```
+
+---
+
+## 8.5 Renovação automática
+
+Verificar:
+
+```bash
+sudo systemctl status certbot.timer
+```
+
+Testar:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+---
+
+# ⚠️ Lições Aprendidas (DevOps Real)
+
+## 1️⃣ Domínio errado no Certbot
+
+Tentativa inicial:
+
+```
+praxis.com.br
+```
+
+Domínio correto:
+
+```
+praxisapp.com.br
+```
+
+Certificado precisa exatamente do mesmo domínio configurado no DNS.
+
+---
+
+## 2️⃣ DNS apontando para IP incorreto
+
+Verificação com:
+
+```bash
+nslookup dominio
+```
+
+Problema identificado:
+
+- Registro A apontava para outro servidor.
+
+Correção:
+
+```
+A → 187.77.37.217
+```
+
+---
+
+## 3️⃣ Diferença entre IPv4 e IPv6
+
+Servidor retornava IPv6:
+
+```bash
+curl ifconfig.me
+```
+
+Mas validação Let's Encrypt usava IPv4:
+
+```bash
+curl -4 ifconfig.me
+```
+
+Conclusão:
+
+Registro A precisa estar correto (IPv4).
+
+---
+
+## 4️⃣ CNAME incorreto no www
+
+Errado:
+
+```
+www → outro domínio
+```
+
+Correto:
+
+```
+www → mesmo domínio
+```
+
+ou
+
+```
+www → mesmo IP
+```
+
+---
+
+# 🏁 Estado Atual da Infraestrutura
+
+✔ VPS Hostinger  
+✔ Gunicorn via Unix Socket  
+✔ Nginx como reverse proxy  
+✔ HTTPS válido  
+✔ Renovação automática  
+✔ Pipeline Azure DevOps funcional  
+✔ Deploy automatizado via SSH  
+✔ Ambiente pronto para produção  
+
+
 # 🛡 Próximo Passo Recomendado
 
 - Fechar porta 22 para ANY

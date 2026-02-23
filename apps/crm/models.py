@@ -41,6 +41,11 @@ class Cliente(models.Model):
     )
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     atualizado_em = models.DateTimeField(auto_now=True, verbose_name="Atualizado em")
+    # Preenchido automaticamente pelo módulo Carteira Ativa a cada contato registrado.
+    # null → cliente nunca foi contatado (tratado como prioridade máxima na fila).
+    data_ultimo_contato = models.DateTimeField(
+        null=True, blank=True, verbose_name="Último contato"
+    )
 
     class Meta:
         verbose_name = "Cliente"

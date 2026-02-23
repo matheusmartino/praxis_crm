@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Carteira Ativa — Dashboard{% endblock %}
+
+{% block content %}
+
+{# ── Cabeçalho ────────────────────────────────────────────────────────────── #}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="bi bi-bar-chart-line me-2 text-primary"></i>Dashboard Carteira Ativa
+    </h2>
+    <a href="{% url 'carteira_ativa:carteira_fila' %}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-list-task me-1"></i>Ver Fila
+    </a>
+</div>
+
+{# ── KPI Cards — linha 1: total + semáforo ────────────────────────────────── #}
+<div class="row g-3 mb-4">
+
+    {# Total de clientes ativos #}
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="card text-center border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="fs-1 fw-bold text-dark">{{ kpis.total }}</div>
+                <div class="text-muted small mt-1">
+                    <i class="bi bi-people me-1"></i>Total Clientes
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Sem contato #}
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="card text-center border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="fs-1 fw-bold text-secondary">{{ kpis.sem_contato }}</div>
+                <div class="text-muted small mt-1">
+                    <span class="badge bg-secondary">Sem contato</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Vermelho #}
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="card text-center border-0 shadow-sm h-100 border-danger border-start border-3">
+            <div class="card-body">
+                <div class="fs-1 fw-bold text-danger">{{ kpis.vermelho }}</div>
+                <div class="text-muted small mt-1">
+                    <span class="badge bg-danger">Crítico</span>
+                    <div>41+ dias</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Amarelo #}
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="card text-center border-0 shadow-sm h-100 border-warning border-start border-3">
+            <div class="card-body">
+                <div class="fs-1 fw-bold text-warning">{{ kpis.amarelo }}</div>
+                <div class="text-muted small mt-1">
+                    <span class="badge bg-warning text-dark">Atenção</span>
+                    <div>21–40 dias</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Verde #}
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="card text-center border-0 shadow-sm h-100 border-success border-start border-3">
+            <div class="card-body">
+                <div class="fs-1 fw-bold text-success">{{ kpis.verde }}</div>
+                <div class="text-muted small mt-1">
+                    <span class="badge bg-success">Em dia</span>
+                    <div>≤ 20 dias</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tocados nos últimos 7 dias #}
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="card text-center border-0 shadow-sm h-100 border-primary border-start border-3">
+            <div class="card-body">
+                <div class="fs-1 fw-bold text-primary">{{ tocados_7d }}</div>
+                <div class="text-muted small mt-1">
+                    <i class="bi bi-telephone-check me-1"></i>Contatados 7d
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{# ── Linha 2: Tabela por vendedor + Contatos 30d ──────────────────────────── #}
+<div class="row g-4">
+
+    {# Distribuição por vendedor #}
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white py-2">
+                <i class="bi bi-person-lines-fill me-1"></i>
+                <strong>Distribuição por Vendedor</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Vendedor</th>
+                                <th class="text-center">Total</th>
+                                <th class="text-center">
+                                    <span class="badge bg-secondary">Sem ct.</span>
+                                </th>
+                                <th class="text-center">
+                                    <span class="badge bg-danger">Crítico</span>
+                                </th>
+                                <th class="text-center">
+                                    <span class="badge bg-warning text-dark">Atenção</span>
+                                </th>
+                                <th class="text-center">
+                                    <span class="badge bg-success">Em dia</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in por_vendedor %}
+                            <tr>
+                                <td class="fw-semibold">{{ v.nome_vendedor }}</td>
+                                <td class="text-center">{{ v.total }}</td>
+                                <td class="text-center text-secondary">
+                                    {% if v.sem_contato %}{{ v.sem_contato }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                </td>
+                                <td class="text-center text-danger fw-semibold">
+                                    {% if v.vermelho %}{{ v.vermelho }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                </td>
+                                <td class="text-center text-warning fw-semibold">
+                                    {% if v.amarelo %}{{ v.amarelo }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                </td>
+                                <td class="text-center text-success fw-semibold">
+                                    {% if v.verde %}{{ v.verde }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox d-block mb-1 fs-4"></i>
+                                    Nenhum dado disponível.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Contatos nos últimos 30 dias #}
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white py-2">
+                <i class="bi bi-calendar3 me-1"></i>
+                <strong>Contatos — Últimos 30 Dias</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Vendedor</th>
+                                <th class="text-center">Qtd. Contatos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in contatos_30d %}
+                            <tr>
+                                <td class="fw-semibold">{{ c.nome_vendedor }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary rounded-pill">{{ c.total }}</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox d-block mb-1 fs-4"></i>
+                                    Nenhum contato nos últimos 30 dias.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

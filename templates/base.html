@@ -11,6 +11,27 @@
     <link href="{% static 'css/praxis-v2.css' %}" rel="stylesheet">
 </head>
 <body>
+{% if request.get_host == "localhost:8000" or request.get_host == "dev.praxisapp.com.br" or request.get_host == "127.0.0.1:8000" %}
+<div style="
+   position: fixed;
+    top: 78px;
+    right: -93px;
+    background: #c0392b;
+    color: white;
+    padding: 6px 60px;
+    transform: rotate(45deg);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    ">
+    🚧 AMBIENTE DE DESENVOLVIMENTO 🚧
+</div>
+
+{% endif %}
+
+    
     {% if user.is_authenticated %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -40,6 +61,26 @@
                             <li><a class="dropdown-item" href="{% url 'prospeccao:dashboard_prospeccao' %}">
                                 <i class="bi bi-bar-chart me-1"></i> Dashboard Prospecção
                             </a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-briefcase-fill"></i> Carteira Ativa
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'carteira_ativa:carteira_fila' %}">
+                                    <i class="bi bi-list-task me-1"></i> Fila de Contato
+                                </a>
+                            </li>
+                            {% if user.perfil.is_gestor or user.perfil.is_admin %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'carteira_ativa:carteira_dashboard' %}">
+                                    <i class="bi bi-bar-chart-line me-1"></i> Dashboard
+                                </a>
+                            </li>
                             {% endif %}
                         </ul>
                     </li>
