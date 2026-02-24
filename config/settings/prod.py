@@ -13,10 +13,10 @@ ALLOWED_HOSTS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "praxiscrm"),
-        "USER": os.getenv("DB_USER", "praxiscrm"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "Praxis@0611"),
-        "HOST": "praxiscrm.postgresql.dbaas.com.br",
+        "NAME": os.getenv("DB_NAME", "db_prod"),
+        "USER": os.getenv("DB_USER", "usuario_prod"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "123456"),
+        "HOST": "localhost",
         "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
